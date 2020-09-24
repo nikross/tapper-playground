@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "fix": "standard --fix",
+    "precommit": "standard"
   },
   "dependencies": {
     "next": "9.5.3",
@@ -15,5 +17,10 @@
   "devDependencies": {
     "husky": "^4.3.0",
     "standard": "^14.3.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run precommit"
+    }
   }
 }
