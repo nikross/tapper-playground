@@ -10,6 +10,7 @@
     "precommit": "standard"
   },
   "dependencies": {
+    "axios": "^0.20.0",
     "next": "9.5.3",
     "node-fetch": "^2.6.1",
     "react": "16.13.1",
