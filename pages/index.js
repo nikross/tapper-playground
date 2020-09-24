@@ -1,6 +1,8 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import fetch from 'node-fetch'
 import styles from '../styles/Home.module.css'
+import Footer from '../components/Footer'
 
 const Home = ({ lpApiStatus }) => {
   return (
@@ -16,21 +18,24 @@ const Home = ({ lpApiStatus }) => {
         </h1>
 
         <p className={styles.description}>
-          Laterpay API Status: {lpApiStatus || 'fetch failed'}
+          Laterpay API Status:
+          <code className={styles.code}>{lpApiStatus || 'fetch failed'}</code>
         </p>
 
-        {/* <div className={styles.grid}>
-          <a href='https://nextjs.org/docs' className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+        <div className={styles.grid}>
+          <Link href='/view'>
+            <a className={styles.card}>
+              <h3>View Your Tab &rarr;</h3>
+              <p>Check how much you've spent.</p>
+            </a>
+          </Link>
 
           <a href='https://nextjs.org/learn' className={styles.card}>
             <h3>Learn &rarr;</h3>
             <p>Learn about Next.js in an interactive course with quizzes!</p>
           </a>
 
-          <a
+          {/* <a
             href='https://github.com/vercel/next.js/tree/master/examples'
             className={styles.card}
           >
@@ -46,20 +51,11 @@ const Home = ({ lpApiStatus }) => {
             <p>
               Instantly deploy your Next.js site to a public URL with Vercel.
             </p>
-          </a>
-        </div> */}
+          </a> */}
+        </div>
       </main>
 
-      <footer className={styles.footer}>
-        <a
-          href='https://laterpay.net/'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          <span>Powered by</span>
-          <img src='/laterpay.svg' alt='Laterpay Logo' className={styles.logo} />
-        </a>
-      </footer>
+      <Footer />
     </div>
   )
 }
