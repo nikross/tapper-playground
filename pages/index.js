@@ -1,74 +1,81 @@
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
-import Link from 'next/link'
-import fetch from 'node-fetch'
-import styles from '../styles/Home.module.css'
+// import Link from 'next/link'
+import useSWR from 'swr'
+import { Flex } from '@chakra-ui/core'
+// import styles from '../styles/Home.module.css'
+import JsonViewer from '../components/JsonViewer'
+import Header from '../components/Header'
 import Footer from '../components/Footer'
+import MyTab from '../components/MyTab'
+import fetchThroughInternalApi from '../utils/fetch-through-internal-api'
+import { handleUserSignin, handleUserSignout, retrieveUserIdFromStorage } from '../utils/manage-user'
+// import { getTabForUser } from '../lib/manage-tab'
 
 const Home = ({ lpApiStatus }) => {
+  const [userId, setUserId] = useState(null)
+  const [tabData, setTabData] = useState(null)
+
+  // Fetch tab list
+  const { data } = useSWR(
+    userId ? [`/v1/tabs/list/${userId}`] : null,
+    fetchThroughInternalApi
+  )
+
+  useEffect(() => {
+    // Try getting user ID from session storage
+    const storedUserId = retrieveUserIdFromStorage()
+    if (storedUserId) setUserId(storedUserId)
+  }, [])
+
+  useEffect(() => {
+    if (data) {
+      const dataArray = Object.values(data)
+      const merchantId = process.env.NEXT_PUBLIC_LP_MERCHANT_ID
+      const tab = dataArray.find(el => el.merchant_id === merchantId)
+      setTabData(tab)
+    }
+  }, [data])
+
+  const handleUserIdChange = () => {
+    const newUserId = userId ? handleUserSignout() : handleUserSignin()
+    setUserId(newUserId)
+    if (!newUserId) setTabData(null)
+  }
   return (
-    <div className={styles.container}>
+    <>
       <Head>
         <title>Tapper Playground</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to the Tapper Playground
-        </h1>
-
-        <p className={styles.description}>
-          Laterpay API Status:
-          <code className={styles.code}>{lpApiStatus || 'fetch failed'}</code>
-        </p>
-
-        <div className={styles.grid}>
-          <Link href='/view'>
-            <a className={styles.card}>
-              <h3>View Your Tab &rarr;</h3>
-              <p>Check how much you've spent.</p>
-            </a>
-          </Link>
-
-          <a href='https://nextjs.org/learn' className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          {/* <a
-            href='https://github.com/vercel/next.js/tree/master/examples'
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href='https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app'
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a> */}
-        </div>
-      </main>
-
-      <Footer />
-    </div>
+      <Header
+        userId={userId}
+        onButtonClick={() => handleUserIdChange()}
+      />
+      <Flex
+        bg='gray.100'
+        minH='100vh'
+        pt={24}
+        direction='column'
+        justify='center'
+        align='center'
+      >
+        <Flex
+          direction='column'
+          justifyContent='center'
+          alignItems='center'
+          height='full'
+          flex='1 0'
+          px={4}
+          maxW='full'
+        >
+          <MyTab userId={userId} tabData={tabData} />
+          <JsonViewer tabData={tabData} />
+        </Flex>
+        <Footer />
+      </Flex>
+    </>
   )
-}
-
-export async function getServerSideProps (context) {
-  // Fetch data from Laterpay API
-  const res = await fetch('https://tapi.sbx.laterpay.net/health')
-  const data = await res.json()
-  return {
-    props: { // will be passed to the page component as props
-      lpApiStatus: data && data.status
-    }
-  }
 }
 
 export default Home

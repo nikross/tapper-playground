@@ -1,18 +1,26 @@
 import React from 'react'
-import styles from '../styles/Home.module.css'
+// import styles from '../styles/Home.module.css'
+import { Box, Image } from '@chakra-ui/core'
 
 const Footer = () => {
   return (
-    <footer className={styles.footer}>
+    <Box textAlign='center' p={6}>
       <a
         href='https://laterpay.net/'
         target='_blank'
         rel='noopener noreferrer'
       >
         <span>Powered by</span>
-        <img src='/laterpay.svg' alt='Laterpay Logo' className={styles.logo} />
+        <Image
+          display='inline'
+          src='/laterpay.svg'
+          alt='Laterpay Logo'
+          ml={2}
+          h={5}
+          w='90px'
+        />
       </a>
-    </footer>
+    </Box>
   )
 }
 

@@ -10,11 +10,17 @@
     "precommit": "standard"
   },
   "dependencies": {
+    "@chakra-ui/core": "^0.8.0",
+    "@emotion/core": "^10.0.35",
+    "@emotion/styled": "^10.0.27",
     "axios": "^0.20.0",
+    "emotion-theming": "^10.0.27",
     "next": "9.5.3",
     "node-fetch": "^2.6.1",
     "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "react-syntax-highlighter": "^13.5.3",
+    "swr": "^0.3.4"
   },
   "devDependencies": {
     "husky": "^4.3.0",
