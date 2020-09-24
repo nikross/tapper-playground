@@ -1,6 +1,8 @@
 import Head from 'next/head'
+import fetch from 'node-fetch'
 import styles from '../styles/Home.module.css'
 
+const Home = ({ lpApiStatus }) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -14,8 +16,7 @@ import styles from '../styles/Home.module.css'
         </h1>
 
         <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
+          Laterpay API Status: {lpApiStatus || 'fetch failed'}
         </p>
 
         {/* <div className={styles.grid}>
@@ -62,3 +63,16 @@ import styles from '../styles/Home.module.css'
     </div>
   )
 }
+
+export async function getServerSideProps (context) {
+  // Fetch data from Laterpay API
+  const res = await fetch('https://tapi.sbx.laterpay.net/health')
+  const data = await res.json()
+  return {
+    props: { // will be passed to the page component as props
+      lpApiStatus: data && data.status
+    }
+  }
+}
+
+export default Home
