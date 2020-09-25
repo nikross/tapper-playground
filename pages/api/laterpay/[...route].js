@@ -8,7 +8,7 @@ export default async (req, res) => {
       query: { method, route: routeArray }
     } = req
     const endpoint = `/${routeArray.join('/')}`
-    const { access_token: token } = await getAuthToken()
+    const token = await getAuthToken()
     if (endpoint) {
       axios({
         method: method || 'get',

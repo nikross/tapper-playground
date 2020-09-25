@@ -1,5 +1,7 @@
+/* global fetch */
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { mutate } from 'swr'
 import {
   Alert,
   AlertDescription,
@@ -23,6 +25,24 @@ const MyTab = ({ tabData, userId }) => {
     }
     setAmountSpent(sumOfPurchases)
   }, [tabData])
+
+  const handlePurchase = async amount => {
+    setAmountSpent(amountSpent + amount)
+    const reqData = JSON.stringify({
+      user_id: userId,
+      cost: amount,
+      payment_model: 'pay_merchant_later'
+    })
+    await fetch('/api/laterpay/purchase', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: reqData
+    })
+    // Revalidate data from internal API
+    mutate([`/v1/tabs/list/${userId}`])
+  }
 
   if (!userId) {
     return (
@@ -98,7 +118,7 @@ const MyTab = ({ tabData, userId }) => {
                 key={price}
                 display='inline-block'
                 minW='150px'
-                onClick={() => setAmountSpent(amountSpent + price * 100)}
+                onClick={() => handlePurchase(price * 100)}
               >
                 {`Contribute €${price}`}
               </Button>

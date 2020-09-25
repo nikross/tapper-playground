@@ -32,7 +32,7 @@ const Home = ({ lpApiStatus }) => {
     if (data) {
       const dataArray = Object.values(data)
       const merchantId = process.env.NEXT_PUBLIC_LP_MERCHANT_ID
-      const tab = dataArray.find(el => el.merchant_id === merchantId)
+      const tab = dataArray.find(el => el.merchant_id === merchantId) || {}
       setTabData(tab)
     }
   }, [data])
