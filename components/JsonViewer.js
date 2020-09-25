@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Collapse, Flex } from '@chakra-ui/core'
+import { Box, Button, Collapse, Flex } from '@chakra-ui/core'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 
@@ -8,18 +8,19 @@ const JsonViewer = ({ tabData }) => {
   const [show, setShow] = useState(false)
   const handleToggle = () => setShow(!show)
 
-  if (!tabData) return null
+  if (!tabData) return <Box h={12} />
   return (
     <Flex
       direction='column'
       align='center'
-      mt={6}
+      pt={6}
+      minH={12}
       w='700px'
       maxW='full'
       overflow='scroll'
     >
       <Button variant='link' variantColor='blue' onClick={handleToggle}>
-        {show ? 'Hide JSON' : 'Show JSON'}
+        {show ? 'Hide Tab' : 'Inspect Tab'}
       </Button>
       <Collapse
         isOpen={show}

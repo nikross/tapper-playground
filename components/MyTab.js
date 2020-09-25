@@ -126,7 +126,7 @@ const MyTab = ({ tabData, userId }) => {
           </SimpleGrid>
         ) : (
           <Flex justify='center'>
-            <Button variantColor='teal' onClick={() => setAmountSpent(0)}>
+            <Button variantColor='teal' onClick={() => window.alert('Sorry, this doesn\'t work yet')}>
               Settle Your Tab
             </Button>
           </Flex>
