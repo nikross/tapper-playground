@@ -9,7 +9,7 @@ import {
   Button,
   CircularProgress,
   Flex,
-  Stack,
+  SimpleGrid,
   Text
 } from '@chakra-ui/core'
 
@@ -71,6 +71,7 @@ const MyTab = ({ tabData, userId }) => {
         >
           <CircularProgress
             capIsRound
+            isIndeterminate={!tabData} // display loading state when there's no data yet
             size='150px'
             color='teal'
             thickness={0.1}
@@ -78,25 +79,38 @@ const MyTab = ({ tabData, userId }) => {
             transform='rotate(180deg)'
           />
           <Text mt={6} fontSize='xl' fontWeight='700'>
-            {`You've spent ${amountSpent / 100}€`}
+            {`You've spent €${(amountSpent / 100).toFixed(2)}`}
           </Text>
           <Text color='gray.500' fontSize='sm' fontWeight='600'>
-            {amountSpent < tabLimit ? `${(tabLimit - amountSpent) / 100}€ left` : 'Pay Now'}
+            {amountSpent < tabLimit ? `€${((tabLimit - amountSpent) / 100).toFixed(2)} left` : 'Pay Now'}
           </Text>
         </Flex>
-        <Stack spacing={6} isInline justifyContent='center'>
-          {amountSpent < tabLimit ? (
-            [1, 2, 5].map(price => (
-              <Button key={price} onClick={() => setAmountSpent(amountSpent + price * 100)}>
-                {`Contribute ${price}€`}
+        {amountSpent < tabLimit ? (
+          <SimpleGrid
+            columns={{ base: 1, md: 3 }}
+            spacing={6}
+            w='500px'
+            maxW='full'
+            mx='auto'
+          >
+            {[1, 2, 5].map(price => (
+              <Button
+                key={price}
+                display='inline-block'
+                minW='150px'
+                onClick={() => setAmountSpent(amountSpent + price * 100)}
+              >
+                {`Contribute €${price}`}
               </Button>
-            ))
-          ) : (
+            ))}
+          </SimpleGrid>
+        ) : (
+          <Flex justify='center'>
             <Button variantColor='teal' onClick={() => setAmountSpent(0)}>
               Settle Your Tab
             </Button>
-          )}
-        </Stack>
+          </Flex>
+        )}
       </>
     </Box>
   )
