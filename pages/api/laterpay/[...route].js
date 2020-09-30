@@ -5,9 +5,12 @@ export default async (req, res) => {
   const BASE_URL = 'https://tapi.sbx.laterpay.net'
   try {
     const {
-      query: { method, route: routeArray }
+      method,
+      url,
+      query: { route: routeArray }
     } = req
     const endpoint = `/${routeArray.join('/')}`
+    const queryParamsString = url.indexOf('?') > -1 ? url.substring(url.indexOf('?')) : ''
     const token = await getAuthToken()
     if (endpoint) {
       axios({
@@ -15,7 +18,7 @@ export default async (req, res) => {
         headers: {
           Authorization: `Bearer ${token}`
         },
-        url: `${BASE_URL}${endpoint}`
+        url: `${BASE_URL}${endpoint}${queryParamsString}`
       })
         .then(lpResponse => {
           const { data } = lpResponse

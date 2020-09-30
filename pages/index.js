@@ -30,10 +30,12 @@ const Home = ({ lpApiStatus }) => {
 
   useEffect(() => {
     if (data) {
-      const dataArray = Object.values(data)
-      const merchantId = process.env.NEXT_PUBLIC_LP_MERCHANT_ID
-      const tab = dataArray.find(el => el.merchant_id === merchantId) || {}
-      setTabData(tab)
+      const allTabs = Object.values(data)
+      const currentTab =
+        allTabs.find(tab => tab.status === 'full') ||
+        allTabs.find(tab => tab.status === 'open') ||
+        {}
+      setTabData(currentTab)
     }
   }, [data])
 

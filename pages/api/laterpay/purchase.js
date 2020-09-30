@@ -19,7 +19,6 @@ export default async (req, res) => {
         ...req.body
       }
     })
-    console.log(data)
     res.status(200).json(data)
     return
   }
