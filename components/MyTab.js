@@ -17,6 +17,7 @@ import {
 
 const MyTab = ({ tabData, userId }) => {
   const [amountSpent, setAmountSpent] = useState(0)
+  const [isSettlingTab, setIsSettlingTab] = useState(false)
   const tabLimit = (tabData && tabData.limit) || 500
   useEffect(() => {
     let sumOfPurchases = 0
@@ -42,6 +43,17 @@ const MyTab = ({ tabData, userId }) => {
     })
     // Revalidate data from internal API
     mutate([`/v1/tabs/list/${userId}`])
+  }
+
+  const handleSettleTab = async tabId => {
+    setIsSettlingTab(true)
+    if (tabId) {
+      console.log('settling tab', tabId)
+      await fetch(`/api/laterpay/settle?tabId=${tabId}`, { method: 'POST' })
+      // Revalidate data from internal API
+      mutate([`/v1/tabs/list/${userId}`])
+      setIsSettlingTab(false)
+    }
   }
 
   if (!userId) {
@@ -126,7 +138,11 @@ const MyTab = ({ tabData, userId }) => {
           </SimpleGrid>
         ) : (
           <Flex justify='center'>
-            <Button variantColor='teal' onClick={() => window.alert('Sorry, this doesn\'t work yet')}>
+            <Button
+              isLoading={isSettlingTab}
+              variantColor='teal'
+              onClick={() => handleSettleTab(tabData && tabData.id)}
+            >
               Settle Your Tab
             </Button>
           </Flex>
