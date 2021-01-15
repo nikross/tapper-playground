@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Button, Collapse, Flex } from '@chakra-ui/core'
+import { Box, Button, Collapse, Flex } from '@chakra-ui/react'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 
@@ -19,19 +19,26 @@ const JsonViewer = ({ tabData }) => {
       maxW='full'
       overflow='scroll'
     >
-      <Button variant='link' variantColor='blue' onClick={handleToggle}>
+      <Button
+        variant='link'
+        colorScheme='blue'
+        onClick={handleToggle}
+        mb={6}
+      >
         {show ? 'Hide Tab' : 'Inspect Tab'}
       </Button>
       <Collapse
-        isOpen={show}
-        bg='white'
-        borderRadius='lg'
-        overflow='hidden'
-        mt={4}
+        in={show}
       >
-        <SyntaxHighlighter language='json' style={docco}>
-          {JSON.stringify(tabData, null, ' ') /* creates JSON string with line breaks */}
-        </SyntaxHighlighter>
+        <Box
+          bg='white'
+          borderRadius='md'
+          overflow='hidden'
+        >
+          <SyntaxHighlighter language='json' style={docco}>
+            {JSON.stringify(tabData, null, ' ') /* creates JSON string with line breaks */}
+          </SyntaxHighlighter>
+        </Box>
       </Collapse>
     </Flex>
   )

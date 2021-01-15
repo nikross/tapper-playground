@@ -1,6 +1,6 @@
 import React from 'react'
 // import styles from '../styles/Home.module.css'
-import { Box, Image } from '@chakra-ui/core'
+import { Box, Image } from '@chakra-ui/react'
 
 const Footer = () => {
   return (

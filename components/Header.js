@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Box, Button, Flex, Heading, Stack, Text } from '@chakra-ui/core'
+import { Box, Button, Flex, Heading, Stack, Text } from '@chakra-ui/react'
 
 const Header = ({ userId, onButtonClick }) => {
   return (

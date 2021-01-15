@@ -13,7 +13,7 @@ import {
   Flex,
   SimpleGrid,
   Text
-} from '@chakra-ui/core'
+} from '@chakra-ui/react'
 
 const MyTab = ({ tabData, userId }) => {
   const [amountSpent, setAmountSpent] = useState(0)
@@ -74,7 +74,7 @@ const MyTab = ({ tabData, userId }) => {
           height='200px'
           borderRadius='md'
         >
-          <AlertIcon size='40px' mr={0} />
+          <AlertIcon boxSize='40px' mr={0} />
           <AlertTitle mt={4} mb={1} fontSize='lg'>
             Sign in to view your tab
           </AlertTitle>
@@ -105,8 +105,9 @@ const MyTab = ({ tabData, userId }) => {
             capIsRound
             isIndeterminate={!tabData} // display loading state when there's no data yet
             size='150px'
-            color='teal'
-            thickness={0.1}
+            color='teal.400'
+            thickness={5}
+            trackColor='gray.100'
             value={amountSpent < tabLimit ? (amountSpent / tabLimit) * 100 : 100}
             transform='rotate(180deg)'
           />
@@ -141,7 +142,7 @@ const MyTab = ({ tabData, userId }) => {
             <Flex justify='center'>
               <Button
                 isLoading={isSettlingTab}
-                variantColor='teal'
+                colorScheme='teal'
                 onClick={() => handleSettleTab(tabData && tabData.id)}
               >
                 Settle Your Tab

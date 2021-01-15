@@ -10,11 +10,11 @@
     "precommit": "standard"
   },
   "dependencies": {
-    "@chakra-ui/core": "^0.8.0",
-    "@emotion/core": "^10.0.35",
-    "@emotion/styled": "^10.0.27",
+    "@chakra-ui/react": "^1.1.4",
+    "@emotion/react": "^11.1.4",
+    "@emotion/styled": "^11.0.0",
     "axios": "^0.21.1",
-    "emotion-theming": "^10.0.27",
+    "framer-motion": "^3.2.1",
     "next": "^10.0.5",
     "node-fetch": "^2.6.1",
     "react": "^17.0.1",
