@@ -117,36 +117,36 @@ const MyTab = ({ tabData, userId }) => {
             {amountSpent < tabLimit ? `€${((tabLimit - amountSpent) / 100).toFixed(2)} left` : 'Pay Now'}
           </Text>
         </Flex>
-        {amountSpent < tabLimit ? (
-          <SimpleGrid
-            columns={{ base: 1, md: 3 }}
-            spacing={6}
-            w='500px'
-            maxW='full'
-            mx='auto'
-          >
-            {[1, 2, 5].map(price => (
-              <Button
-                key={price}
-                display='inline-block'
-                minW='150px'
-                onClick={() => handlePurchase(price * 100)}
-              >
-                {`Contribute €${price}`}
-              </Button>
-            ))}
-          </SimpleGrid>
-        ) : (
-          <Flex justify='center'>
-            <Button
-              isLoading={isSettlingTab}
-              variantColor='teal'
-              onClick={() => handleSettleTab(tabData && tabData.id)}
+        {amountSpent < tabLimit
+          ? (
+            <SimpleGrid
+              columns={{ base: 1, md: 3 }}
+              spacing={6}
+              w='500px'
+              maxW='full'
+              mx='auto'
             >
-              Settle Your Tab
-            </Button>
-          </Flex>
-        )}
+              {[1, 2, 5].map(price => (
+                <Button
+                  key={price}
+                  display='inline-block'
+                  minW='150px'
+                  onClick={() => handlePurchase(price * 100)}
+                >
+                  {`Contribute €${price}`}
+                </Button>
+              ))}
+            </SimpleGrid>)
+          : (
+            <Flex justify='center'>
+              <Button
+                isLoading={isSettlingTab}
+                variantColor='teal'
+                onClick={() => handleSettleTab(tabData && tabData.id)}
+              >
+                Settle Your Tab
+              </Button>
+            </Flex>)}
       </>
     </Box>
   )
