@@ -1,5 +1,5 @@
 import axios from 'axios'
-import getAuthToken from '../../../lib/get-auth-token'
+import getAccessToken from '@/lib/get-access-token'
 
 export default async (req, res) => {
   const BASE_URL = 'https://tapi.sbx.laterpay.net'
@@ -11,7 +11,7 @@ export default async (req, res) => {
     } = req
     const endpoint = `/${routeArray.join('/')}`
     const queryParamsString = url.indexOf('?') > -1 ? url.substring(url.indexOf('?')) : ''
-    const token = await getAuthToken()
+    const token = await getAccessToken()
     if (endpoint) {
       axios({
         method: method || 'get',

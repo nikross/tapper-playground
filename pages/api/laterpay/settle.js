@@ -1,4 +1,4 @@
-import signedRequest from '../../../lib/signed-request'
+import signedRequest from '@/lib/signed-request'
 
 export default async (req, res) => {
   const { tabId } = req.query

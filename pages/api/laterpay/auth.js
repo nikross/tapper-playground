@@ -1,6 +1,6 @@
-import getAuthToken from '../../../lib/get-auth-token'
+import getAccessToken from '@/lib/get-access-token'
 
 export default async (req, res) => {
-  const token = await getAuthToken()
+  const token = await getAccessToken()
   res.status(200).json({ token })
 }

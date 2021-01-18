@@ -1,83 +1,66 @@
 import { useEffect, useState } from 'react'
-import Head from 'next/head'
-// import Link from 'next/link'
-import useSWR from 'swr'
-import { Flex } from '@chakra-ui/react'
-// import styles from '../styles/Home.module.css'
-import JsonViewer from '../components/JsonViewer'
-import Header from '../components/Header'
-import Footer from '../components/Footer'
-import MyTab from '../components/MyTab'
-import fetchThroughInternalApi from '../utils/fetch-through-internal-api'
-import { handleUserSignin, handleUserSignout, retrieveUserIdFromStorage } from '../utils/manage-user'
-// import { getTabForUser } from '../lib/manage-tab'
+import { Button, Flex, Textarea } from '@chakra-ui/react'
+import { laterpayPublicClient } from '@/lib/oauth'
 
-const Home = ({ lpApiStatus }) => {
-  const [userId, setUserId] = useState(null)
-  const [tabData, setTabData] = useState(null)
+const StrongIdentity = () => {
+  const [token, setToken] = useState()
 
-  // Fetch tab list
-  const { data } = useSWR(
-    userId ? [`/v1/tabs/list/${userId}`] : null,
-    fetchThroughInternalApi
-  )
+  const authorize = () => {
+    if (laterpayPublicClient) {
+      const uri = laterpayPublicClient.code.getUri({
+        query: { // Use query instead of body due to 'Content-Type: application/x-www-form-urlencoded'
+          code_challenge: 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM', // https://ldapwiki.com/wiki/Code_challenge_method
+          code_challenge_method: 'S256'
+        },
+        state: 'staticState'
+      })
+      window.location.href = uri
+    }
+  }
 
   useEffect(() => {
-    // Try getting user ID from session storage
-    const storedUserId = retrieveUserIdFromStorage()
-    if (storedUserId) setUserId(storedUserId)
+    if (window.location.search.includes('code')) {
+      laterpayPublicClient.code.getToken(window.location.href, {
+        body: {
+          code_verifier: 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk' // https://ldapwiki.com/wiki/Code_challenge_method
+        },
+        state: 'staticState'
+      })
+        .then(response => {
+          const { accessToken, data } = response
+          console.log(data)
+          setToken(accessToken)
+        })
+        .catch(error => console.log(error))
+    }
   }, [])
 
-  useEffect(() => {
-    if (data) {
-      const allTabs = Object.values(data)
-      const currentTab =
-        allTabs.find(tab => tab.status === 'full') ||
-        allTabs.find(tab => tab.status === 'open') ||
-        {}
-      setTabData(currentTab)
-    }
-  }, [data])
-
-  const handleUserIdChange = () => {
-    const newUserId = userId ? handleUserSignout() : handleUserSignin()
-    setUserId(newUserId)
-    if (!newUserId) setTabData(null)
-  }
   return (
-    <>
-      <Head>
-        <title>Tapper Playground</title>
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
-      <Header
-        userId={userId}
-        onButtonClick={() => handleUserIdChange()}
-      />
-      <Flex
-        bg='gray.100'
-        minH='100vh'
-        pt={24}
-        direction='column'
-        justify='center'
-        align='center'
+    <Flex
+      align='center'
+      justify='center'
+      direction='column'
+      h='100vh'
+    >
+      <Button
+        size='lg'
+        colorScheme='blue'
+        onClick={() => authorize()}
       >
-        <Flex
-          direction='column'
-          justifyContent='center'
-          alignItems='center'
-          height='full'
-          flex='1 0'
-          px={4}
-          maxW='full'
-        >
-          <MyTab userId={userId} tabData={tabData} />
-          <JsonViewer tabData={tabData} />
-        </Flex>
-        <Footer />
-      </Flex>
-    </>
+        Authorize
+      </Button>
+      {token && (
+        <Textarea
+          readOnly
+          value={token}
+          bg='white'
+          mt={6}
+          maxW='lg'
+          rows='20'
+        />
+      )}
+    </Flex>
   )
 }
 
-export default Home
+export default StrongIdentity

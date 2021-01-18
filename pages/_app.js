@@ -1,4 +1,4 @@
-// import '../styles/globals.css'
+// import '@/styles/globals.css'
 import { Global, css } from '@emotion/react'
 import { ChakraProvider, theme } from '@chakra-ui/react'
 
