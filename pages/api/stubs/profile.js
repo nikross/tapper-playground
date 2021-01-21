@@ -1,3 +1,5 @@
+// Laterpay doesn't offer a profile/user endpoint, but next-auth will throw an error if no such endpoint is specified.
+// This API page serves as a temporary placeholder.
 export default (req, res) => {
   try {
     console.log(req.headers)
@@ -10,8 +12,8 @@ export default (req, res) => {
     res.status(200).json({
       id: 123,
       laterpayUserId: tokenData.sub,
-      name: 'Niklas',
-      email: 'nrossmann@laterpay.net',
+      name: 'John Doe',
+      email: 'john@doe.com',
       picture: null
     })
   } catch (error) {

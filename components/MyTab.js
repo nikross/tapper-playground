@@ -1,7 +1,6 @@
-/* global fetch */
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { mutate } from 'swr'
+// import { mutate } from 'swr'
 import {
   Alert,
   AlertDescription,
@@ -30,29 +29,29 @@ const MyTab = ({ tabData, userId }) => {
 
   const handlePurchase = async amount => {
     setAmountSpent(amountSpent + amount)
-    const reqData = JSON.stringify({
-      user_id: userId,
-      cost: amount,
-      payment_model: 'pay_merchant_later'
-    })
-    await fetch('/api/laterpay/purchase', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: reqData
-    })
-    // Revalidate data from internal API
-    mutate([`/v1/tabs/list/${userId}`])
+    // const reqData = JSON.stringify({
+    //   user_id: userId,
+    //   cost: amount,
+    //   payment_model: 'pay_merchant_later'
+    // })
+    // await fetch('/api/laterpay/purchase', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: reqData
+    // })
+    // // Revalidate data from internal API
+    // mutate([`/v1/tabs/list/${userId}`])
   }
 
   const handleSettleTab = async tabId => {
     setIsSettlingTab(true)
     if (tabId) {
       console.log('settling tab', tabId)
-      await fetch(`/api/laterpay/settle?tabId=${tabId}`, { method: 'POST' })
-      // Revalidate data from internal API
-      mutate([`/v1/tabs/list/${userId}`])
+      // await fetch(`/api/laterpay/settle?tabId=${tabId}`, { method: 'POST' })
+      // // Revalidate data from internal API
+      // mutate([`/v1/tabs/list/${userId}`])
       setIsSettlingTab(false)
     }
   }

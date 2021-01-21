@@ -146,7 +146,7 @@ const Product = ({ product }) => {
                 color: 'gray.700'
               }}
             >
-              Go back
+              Back to all kittens
             </Button>
           </NextLink>
         </Stack>

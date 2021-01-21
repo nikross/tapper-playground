@@ -26,7 +26,7 @@ const Header = () => {
             <Heading
               as='h1'
               display={{ base: 'none', lg: 'block' }}
-              fontSize='1.375rem'
+              fontSize='1.25rem'
               mr={8}
               transition='color .3s ease'
               _hover={{
@@ -54,7 +54,7 @@ const Header = () => {
             color='gray.500'
             fontSize='sm'
           >
-            <Box>Signed in as </Box>
+            <Box>Signed in as</Box>
             <Box
               isTruncated
               fontWeight='700'

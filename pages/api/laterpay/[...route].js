@@ -2,11 +2,8 @@ import axios from 'axios'
 
 const BASE_URL = 'https://tapi.laterpay.net'
 
-const signedRequest = async ({ endpoint, ...rest }) => {
-  return axios({
-    url: BASE_URL + endpoint,
-    ...rest
-  })
+const handleRequest = async (request) => {
+  return axios(request)
     .then(response => {
       return response.data
     })
@@ -53,7 +50,7 @@ export default async (req, res) => {
         res.status(404).json({ error: 'route not found' })
         res.end()
     }
-    const laterpayJsonResponse = await signedRequest(requestObject)
+    const laterpayJsonResponse = await handleRequest(requestObject)
     res.status(200).json(laterpayJsonResponse)
   } catch (error) {
     res.status(error.status || 500).json({
