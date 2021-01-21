@@ -1,10 +1,10 @@
-// import '../styles/globals.css'
-import { Global, css } from '@emotion/core'
-import { ThemeProvider, CSSReset, theme } from '@chakra-ui/core'
+// import '@/styles/globals.css'
+import { Global, css } from '@emotion/react'
+import { ChakraProvider, theme } from '@chakra-ui/react'
+import { Provider as AuthProvider } from 'next-auth/client'
 
 const GlobalStyle = ({ children }) => (
   <>
-    <CSSReset />
     <Global
       styles={css`
         html {
@@ -25,10 +25,12 @@ const GlobalStyle = ({ children }) => (
 
 function MyApp ({ Component, pageProps }) {
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <ChakraProvider theme={theme}>
+      <AuthProvider session={pageProps.session}>
+        <GlobalStyle />
+        <Component {...pageProps} />
+      </AuthProvider>
+    </ChakraProvider>
   )
 }
 

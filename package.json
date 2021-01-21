@@ -10,21 +10,23 @@
     "precommit": "standard"
   },
   "dependencies": {
-    "@chakra-ui/core": "^0.8.0",
-    "@emotion/core": "^10.0.35",
-    "@emotion/styled": "^10.0.27",
-    "axios": "^0.20.0",
-    "emotion-theming": "^10.0.27",
-    "next": "9.5.3",
-    "node-fetch": "^2.6.1",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
-    "react-syntax-highlighter": "^13.5.3",
-    "swr": "^0.3.4"
+    "@chakra-ui/icons": "^1.0.3",
+    "@chakra-ui/react": "^1.1.4",
+    "@emotion/react": "^11.1.4",
+    "@emotion/styled": "^11.0.0",
+    "axios": "^0.21.1",
+    "date-fns": "^2.16.1",
+    "framer-motion": "^3.2.1",
+    "next": "^10.0.5",
+    "next-auth": "^3.1.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-syntax-highlighter": "^15.4.3",
+    "swr": "^0.4.0"
   },
   "devDependencies": {
-    "husky": "^4.3.0",
-    "standard": "^14.3.4"
+    "husky": "^4.3.7",
+    "standard": "^16.0.3"
   },
   "husky": {
     "hooks": {

@@ -1,12 +1,23 @@
-import { useState } from 'react'
+import { useRef } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Button, Collapse, Flex } from '@chakra-ui/core'
+import {
+  Box,
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  Flex,
+  useDisclosure
+} from '@chakra-ui/react'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 
 const JsonViewer = ({ tabData }) => {
-  const [show, setShow] = useState(false)
-  const handleToggle = () => setShow(!show)
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const btnRef = useRef()
 
   if (!tabData) return <Box h={12} />
   return (
@@ -19,20 +30,40 @@ const JsonViewer = ({ tabData }) => {
       maxW='full'
       overflow='scroll'
     >
-      <Button variant='link' variantColor='blue' onClick={handleToggle}>
-        {show ? 'Hide Tab' : 'Inspect Tab'}
-      </Button>
-      <Collapse
-        isOpen={show}
-        bg='white'
-        borderRadius='lg'
-        overflow='hidden'
-        mt={4}
+      <Button
+        variant='link'
+        colorScheme='blue'
+        mb={6}
+        onClick={onOpen}
+        ref={btnRef}
       >
-        <SyntaxHighlighter language='json' style={docco}>
-          {JSON.stringify(tabData, null, ' ') /* creates JSON string with line breaks */}
-        </SyntaxHighlighter>
-      </Collapse>
+        Inspect Tab
+      </Button>
+      <Drawer
+        isOpen={isOpen}
+        placement='right'
+        size='xl'
+        onClose={onClose}
+        finalFocusRef={btnRef}
+      >
+        <DrawerOverlay>
+          <DrawerContent>
+            <DrawerCloseButton size='lg' />
+            <DrawerHeader>Current Tab</DrawerHeader>
+            <DrawerBody>
+              <Box
+                bg='white'
+                borderRadius='md'
+                overflow='hidden'
+              >
+                <SyntaxHighlighter language='json' style={docco}>
+                  {JSON.stringify(tabData, null, ' ') /* creates JSON string with line breaks */}
+                </SyntaxHighlighter>
+              </Box>
+            </DrawerBody>
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>
     </Flex>
   )
 }

@@ -1,7 +1,6 @@
-/* global fetch */
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { mutate } from 'swr'
+// import { mutate } from 'swr'
 import {
   Alert,
   AlertDescription,
@@ -13,7 +12,8 @@ import {
   Flex,
   SimpleGrid,
   Text
-} from '@chakra-ui/core'
+} from '@chakra-ui/react'
+import { humanReadablePrice } from '@/utils/price'
 
 const MyTab = ({ tabData, userId }) => {
   const [amountSpent, setAmountSpent] = useState(0)
@@ -22,36 +22,36 @@ const MyTab = ({ tabData, userId }) => {
   useEffect(() => {
     let sumOfPurchases = 0
     if (tabData && tabData.purchases) {
-      sumOfPurchases = tabData.purchases.reduce((sum, purchase) => (sum + purchase.cost), 0)
+      sumOfPurchases = tabData.purchases.reduce((sum, purchase) => (sum + purchase.price.amount), 0)
     }
     setAmountSpent(sumOfPurchases)
   }, [tabData])
 
   const handlePurchase = async amount => {
     setAmountSpent(amountSpent + amount)
-    const reqData = JSON.stringify({
-      user_id: userId,
-      cost: amount,
-      payment_model: 'pay_merchant_later'
-    })
-    await fetch('/api/laterpay/purchase', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: reqData
-    })
-    // Revalidate data from internal API
-    mutate([`/v1/tabs/list/${userId}`])
+    // const reqData = JSON.stringify({
+    //   user_id: userId,
+    //   cost: amount,
+    //   payment_model: 'pay_merchant_later'
+    // })
+    // await fetch('/api/laterpay/purchase', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: reqData
+    // })
+    // // Revalidate data from internal API
+    // mutate([`/v1/tabs/list/${userId}`])
   }
 
   const handleSettleTab = async tabId => {
     setIsSettlingTab(true)
     if (tabId) {
       console.log('settling tab', tabId)
-      await fetch(`/api/laterpay/settle?tabId=${tabId}`, { method: 'POST' })
-      // Revalidate data from internal API
-      mutate([`/v1/tabs/list/${userId}`])
+      // await fetch(`/api/laterpay/settle?tabId=${tabId}`, { method: 'POST' })
+      // // Revalidate data from internal API
+      // mutate([`/v1/tabs/list/${userId}`])
       setIsSettlingTab(false)
     }
   }
@@ -74,7 +74,7 @@ const MyTab = ({ tabData, userId }) => {
           height='200px'
           borderRadius='md'
         >
-          <AlertIcon size='40px' mr={0} />
+          <AlertIcon boxSize='40px' mr={0} />
           <AlertTitle mt={4} mb={1} fontSize='lg'>
             Sign in to view your tab
           </AlertTitle>
@@ -105,48 +105,50 @@ const MyTab = ({ tabData, userId }) => {
             capIsRound
             isIndeterminate={!tabData} // display loading state when there's no data yet
             size='150px'
-            color='teal'
-            thickness={0.1}
+            color='teal.400'
+            thickness={5}
+            trackColor='gray.100'
             value={amountSpent < tabLimit ? (amountSpent / tabLimit) * 100 : 100}
             transform='rotate(180deg)'
           />
           <Text mt={6} fontSize='xl' fontWeight='700'>
-            {`You've spent €${(amountSpent / 100).toFixed(2)}`}
+            {`You've spent $${humanReadablePrice(amountSpent)}`}
           </Text>
           <Text color='gray.500' fontSize='sm' fontWeight='600'>
             {amountSpent < tabLimit ? `€${((tabLimit - amountSpent) / 100).toFixed(2)} left` : 'Pay Now'}
           </Text>
         </Flex>
-        {amountSpent < tabLimit ? (
-          <SimpleGrid
-            columns={{ base: 1, md: 3 }}
-            spacing={6}
-            w='500px'
-            maxW='full'
-            mx='auto'
-          >
-            {[1, 2, 5].map(price => (
-              <Button
-                key={price}
-                display='inline-block'
-                minW='150px'
-                onClick={() => handlePurchase(price * 100)}
-              >
-                {`Contribute €${price}`}
-              </Button>
-            ))}
-          </SimpleGrid>
-        ) : (
-          <Flex justify='center'>
-            <Button
-              isLoading={isSettlingTab}
-              variantColor='teal'
-              onClick={() => handleSettleTab(tabData && tabData.id)}
+        {amountSpent < tabLimit
+          ? (
+            <SimpleGrid
+              columns={{ base: 1, md: 3 }}
+              spacing={6}
+              w='500px'
+              maxW='full'
+              mx='auto'
             >
-              Settle Your Tab
-            </Button>
-          </Flex>
-        )}
+              {[1, 2, 5].map(price => (
+                <Button
+                  key={price}
+                  display='inline-block'
+                  minW='150px'
+                  onClick={() => handlePurchase(price * 100)}
+                >
+                  {`Contribute €${price}`}
+                </Button>
+              ))}
+            </SimpleGrid>)
+          : (
+            <Flex justify='center'>
+              <Button
+                isLoading={isSettlingTab}
+                colorScheme='teal'
+                size='lg'
+                onClick={() => handleSettleTab(tabData && tabData.id)}
+              >
+                Settle Your Tab
+              </Button>
+            </Flex>)}
       </>
     </Box>
   )
