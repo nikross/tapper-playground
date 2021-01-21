@@ -1,12 +1,23 @@
-import { useState } from 'react'
+import { useRef } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Button, Collapse, Flex } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  Flex,
+  useDisclosure
+} from '@chakra-ui/react'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 
 const JsonViewer = ({ tabData }) => {
-  const [show, setShow] = useState(false)
-  const handleToggle = () => setShow(!show)
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const btnRef = useRef()
 
   if (!tabData) return <Box h={12} />
   return (
@@ -22,24 +33,37 @@ const JsonViewer = ({ tabData }) => {
       <Button
         variant='link'
         colorScheme='blue'
-        onClick={handleToggle}
         mb={6}
+        onClick={onOpen}
+        ref={btnRef}
       >
-        {show ? 'Hide Tab' : 'Inspect Tab'}
+        Inspect Tab
       </Button>
-      <Collapse
-        in={show}
+      <Drawer
+        isOpen={isOpen}
+        placement='right'
+        size='xl'
+        onClose={onClose}
+        finalFocusRef={btnRef}
       >
-        <Box
-          bg='white'
-          borderRadius='md'
-          overflow='hidden'
-        >
-          <SyntaxHighlighter language='json' style={docco}>
-            {JSON.stringify(tabData, null, ' ') /* creates JSON string with line breaks */}
-          </SyntaxHighlighter>
-        </Box>
-      </Collapse>
+        <DrawerOverlay>
+          <DrawerContent>
+            <DrawerCloseButton size='lg' />
+            <DrawerHeader>Current Tab</DrawerHeader>
+            <DrawerBody>
+              <Box
+                bg='white'
+                borderRadius='md'
+                overflow='hidden'
+              >
+                <SyntaxHighlighter language='json' style={docco}>
+                  {JSON.stringify(tabData, null, ' ') /* creates JSON string with line breaks */}
+                </SyntaxHighlighter>
+              </Box>
+            </DrawerBody>
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>
     </Flex>
   )
 }

@@ -1,0 +1,12 @@
+{
+  "data":[
+    {"id":"kitten-pic-edison","name":"Edison","price":200,"url":"https://placekitten.com/800/500"},
+    {"id":"kitten-pic-dillan","name":"Dillan","price":200,"url":"https://placekitten.com/500/500"},
+    {"id":"kitten-pic-daltons","name":"The Daltons","price":200,"url":"https://placekitten.com/700/400"},
+    {"id":"kitten-pic-ophelia","name":"Ophelia","price":200,"url":"https://placekitten.com/700/800"},
+    {"id":"kitten-pic-stanley","name":"Stanley","price":200,"url":"https://placekitten.com/800/700"},
+    {"id":"kitten-pic-jerrold","name":"Jerrold","price":200,"url":"https://placekitten.com/300/300"},
+    {"id":"kitten-pic-josefina","name":"Josefina","price":200,"url":"https://placekitten.com/500/900"},
+    {"id":"kitten-pic-zora","name":"Zora","price":200,"url":"https://placekitten.com/500/800"}
+  ]
+}

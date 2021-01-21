@@ -14,6 +14,7 @@ import {
   SimpleGrid,
   Text
 } from '@chakra-ui/react'
+import { humanReadablePrice } from '@/utils/price'
 
 const MyTab = ({ tabData, userId }) => {
   const [amountSpent, setAmountSpent] = useState(0)
@@ -22,7 +23,7 @@ const MyTab = ({ tabData, userId }) => {
   useEffect(() => {
     let sumOfPurchases = 0
     if (tabData && tabData.purchases) {
-      sumOfPurchases = tabData.purchases.reduce((sum, purchase) => (sum + purchase.cost), 0)
+      sumOfPurchases = tabData.purchases.reduce((sum, purchase) => (sum + purchase.price.amount), 0)
     }
     setAmountSpent(sumOfPurchases)
   }, [tabData])
@@ -112,7 +113,7 @@ const MyTab = ({ tabData, userId }) => {
             transform='rotate(180deg)'
           />
           <Text mt={6} fontSize='xl' fontWeight='700'>
-            {`You've spent €${(amountSpent / 100).toFixed(2)}`}
+            {`You've spent $${humanReadablePrice(amountSpent)}`}
           </Text>
           <Text color='gray.500' fontSize='sm' fontWeight='600'>
             {amountSpent < tabLimit ? `€${((tabLimit - amountSpent) / 100).toFixed(2)} left` : 'Pay Now'}
@@ -143,6 +144,7 @@ const MyTab = ({ tabData, userId }) => {
               <Button
                 isLoading={isSettlingTab}
                 colorScheme='teal'
+                size='lg'
                 onClick={() => handleSettleTab(tabData && tabData.id)}
               >
                 Settle Your Tab
