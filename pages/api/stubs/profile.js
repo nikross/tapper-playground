@@ -2,9 +2,10 @@
 // This API page serves as a temporary placeholder.
 export default (req, res) => {
   try {
-    console.log(req.headers)
     const authHeader = req.headers.authorization
+    if (!authHeader) throw new Error()
     const accessToken = authHeader.split('Bearer ')[1]
+    console.log({ accessToken })
     const tokenPayload = accessToken.split('.')[1]
     const buff = Buffer.from(tokenPayload, 'base64')
     const text = buff.toString('ascii')

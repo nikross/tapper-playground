@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 
 // See https://next-auth.js.org/configuration/options
 const options = {
-  // debug: true,
+  debug: true,
   providers: [
     // Configure custom OAuth2 provider
     {
@@ -24,9 +24,9 @@ const options = {
         return {
           id: profile.laterpayUserId,
           laterpayUserId: profile.laterpayUserId,
-          name: null,
-          email: null,
-          image: null
+          name: 'John',
+          email: 'user@test.com',
+          image: 'https://i.pravatar.cc/150'
         }
       },
       clientId: process.env.LP_CLIENT_ID,

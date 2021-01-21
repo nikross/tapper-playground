@@ -53,7 +53,7 @@ const Product = ({ product }) => {
         },
         payment_model: 'pay_merchant_later',
         sales_model: 'time_pass',
-        valid_timedelta: '5m'
+        valid_timedelta: '1d'
       }
     })
     console.log(result)
