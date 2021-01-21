@@ -19,7 +19,7 @@ const options = {
       // According to the official docs, profileUrl and profile are optional (https://next-auth.js.org/configuration/providers#oauth-provider-options)
       // But not specifying them results in an error.
       // See https://github.com/nextauthjs/next-auth/issues/209 and https://github.com/nextauthjs/next-auth/issues/1065
-      profileUrl: 'http://localhost:3000/api/stubs/profile',
+      profileUrl: `${process.env.NEXTAUTH_URL}/api/stubs/profile`,
       profile: (profile) => {
         return {
           id: profile.laterpayUserId,
