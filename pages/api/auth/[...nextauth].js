@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth'
 
+// See https://next-auth.js.org/configuration/options
 const options = {
   // debug: true,
   providers: [
@@ -28,21 +29,18 @@ const options = {
           image: null
         }
       },
-      clientId: process.env.LP_NEXTAUTH_CLIENT_ID,
+      clientId: process.env.LP_CLIENT_ID,
       // Don't specify clientSecret. Add it via Authoirzation header instead.
       // Reason: Hydra requires 'client_secret_basic'. But next-auth will use 'client_secret_post' when clientSecret is set in config.
       // See https://github.com/nextauthjs/next-auth/issues/950
-      // clientSecret: process.env.LP_NEXTAUTH_CLIENT_SECRET,
+      // clientSecret: ***,
       headers: {
         Accept: 'application/json',
-        Authorization: 'Basic ' + Buffer.from((process.env.LP_NEXTAUTH_CLIENT_ID + ':' + process.env.LP_NEXTAUTH_CLIENT_SECRET)).toString('base64')
+        Authorization: 'Basic ' + Buffer.from((process.env.LP_CLIENT_ID + ':' + process.env.LP_CLIENT_SECRET)).toString('base64')
       }
     }
   ],
-  secret: 'INp8IvdIyeMcoGAgFGoA61DdBglwwSqnXJZkgz8PSnw',
-  jwt: {
-    secret: process.env.LP_NEXTAUTH_CLIENT_SECRET
-  },
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     // Add properties to JWT before generation
     jwt: async (token, user, account, profile, isNewUser) => {
@@ -65,8 +63,6 @@ const options = {
       return Promise.resolve(session)
     }
   }
-  // A database is optional, but required to persist accounts in a database
-  // database: process.env.DATABASE_URL,
 }
 
 export default (req, res) => NextAuth(req, res, options)

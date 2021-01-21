@@ -35,7 +35,7 @@ export default async (req, res) => {
     switch (pathname) {
       case '/v1/access':
         requestObject.params = {
-          merchant_id: process.env.NEXT_PUBLIC_LP_MERCHANT_ID,
+          merchant_id: process.env.LP_MERCHANT_ID,
           ...params
         }
         break
