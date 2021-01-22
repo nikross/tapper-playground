@@ -145,7 +145,8 @@ const Photo = ({ photo }) => {
                 />
               </Box>
             </Box>
-            {!access.has_access && (
+            {(!session || access.has_access === false) && (
+              // Don't show this when user is signed in but the request to /access hasn't finished yet
               <Stack
                 alignItems='center'
                 spacing={6}
