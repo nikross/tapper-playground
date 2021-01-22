@@ -38,7 +38,7 @@ const options = {
         Authorization: 'Basic ' + Buffer.from((process.env.LP_CLIENT_ID + ':' + process.env.LP_CLIENT_SECRET)).toString('base64')
       }
     }
-  ],
+  ]/* ,
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     // Use JSON Web Tokens for session instead of database sessions.
@@ -73,7 +73,7 @@ const options = {
         return Promise.resolve(session)
       }
     }
-  }
+  } */
 }
 
 export default (req, res) => NextAuth(req, res, options)
