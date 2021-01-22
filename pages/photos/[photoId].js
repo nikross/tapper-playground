@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import { ArrowBackIcon, LockIcon } from '@chakra-ui/icons'
 import { useSession, signIn } from 'next-auth/client'
-import useSWR, { mutate } from 'swr'
+import useSWR from 'swr'
 import { formatDistanceToNowStrict } from 'date-fns'
 import toast from 'react-hot-toast'
 
@@ -28,7 +28,7 @@ const Photo = ({ photo }) => {
   const [isPurchasing, setIsPurchasing] = useState(null)
   const offeringId = getOfferingIdFromPhotoId(photo.id)
 
-  const { data } = useSWR(
+  const { data, mutate } = useSWR(
     session && photo.id
       ? ['/v1/access', offeringId]
       : null,
@@ -64,12 +64,16 @@ const Photo = ({ photo }) => {
     if (result.tab) {
       const { limit, status, total } = result.tab
       const success = status === 'open'
-      success
-        ? toast.success(`${numberToPrice(limit - total, '$')} remaining on your Tab`)
-        : toast.error('Please settle your Tab')
+      if (success) {
+        toast.success(`${numberToPrice(limit - total, '$')} remaining on your Tab`)
+        // Revalidate access data
+        mutate({
+          access: { ...data.access, has_access: true }
+        })
+      } else {
+        toast.error('Please settle your Tab')
+      }
     }
-    // Revalidate access data
-    mutate('/v1/access')
     setIsPurchasing(false)
   }
 

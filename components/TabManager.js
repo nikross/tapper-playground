@@ -20,11 +20,9 @@ const TabManager = ({ tabData }) => {
   const tabLimit = (tabData && tabData.limit) || 500
 
   useEffect(() => {
-    let sumOfPurchases = 0
-    if (tabData && tabData.purchases) {
-      sumOfPurchases = tabData.purchases.reduce((sum, purchase) => (sum + purchase.price.amount), 0)
+    if (tabData) {
+      setAmountSpent(tabData.total || 0)
     }
-    setAmountSpent(sumOfPurchases)
   }, [tabData])
 
   const onContribute = async amount => {
@@ -48,12 +46,14 @@ const TabManager = ({ tabData }) => {
     if (result.tab) {
       const { limit, status, total } = result.tab
       const success = status === 'open'
-      success
-        ? toast.success(`${numberToPrice(limit - total, '$')} remaining on your Tab`)
-        : toast.error('Please settle your Tab')
+      if (success) {
+        toast.success(`${numberToPrice(limit - total, '$')} remaining on your Tab`)
+        // Revalidate Tab data
+        mutate(['/v1/tabs'])
+      } else {
+        toast.error('Please settle your Tab')
+      }
     }
-    // Revalidate Tab data
-    mutate(['/v1/tabs'])
   }
 
   const onSettleTab = async tabId => {
@@ -62,13 +62,15 @@ const TabManager = ({ tabData }) => {
       const result = await fetchFromLaterpay(`/v1/payment/finish/${tabId}`, {
         method: 'post'
       })
-      result.error
-        ? toast.error(result.error.message)
-        : toast.success('Tab settled')
-      // Revalidate Tab data
-      setTimeout(() => {
+      if (result.error) {
+        toast.error(result.error.message)
+      } else {
+        toast.success('Tab settled')
+        // Reset state
+        setAmountSpent(0)
+        // Revalidate Tab data
         mutate(['/v1/tabs'])
-      }, 1000)
+      }
     }
     setIsSettlingTab(false)
   }
