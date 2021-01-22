@@ -23,9 +23,9 @@ const options = {
       profile: (profile) => {
         return {
           id: profile.id,
-          name: 'John',
-          email: 'user@test.com',
-          image: 'https://i.pravatar.cc/150'
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture
         }
       },
       clientId: process.env.LP_CLIENT_ID,
