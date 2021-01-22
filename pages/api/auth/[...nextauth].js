@@ -22,7 +22,7 @@ const options = {
       profileUrl: `${process.env.NEXTAUTH_URL}/api/stubs/profile`,
       profile: (profile) => {
         return {
-          id: 123,
+          id: profile.id,
           name: 'John',
           email: 'user@test.com',
           image: 'https://i.pravatar.cc/150'
