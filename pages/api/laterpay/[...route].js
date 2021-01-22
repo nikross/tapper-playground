@@ -56,10 +56,11 @@ export default async (req, res) => {
       case 'tabs':
         requestObject.params = params
         break
+      // Settle a Tab
       case 'payment':
-        // Settle Tab via /v1/payment/finish/{tab_id}
-        if (route[2] === 'finish') {
-          // Switch current token with client_credentials token
+        if (route[2] === 'finish') { // this is supposed to catch route `/v1/payment/finish/{tab_id}`
+          // The endpoint rejects access tokens that were obtained via authorization_code flow
+          // Replace the existing token with a new access token from client_credentials flow
           const clientCredentials = await handleRequest({
             url: 'https://auth.laterpay.net/oauth2/token',
             method: 'post',
