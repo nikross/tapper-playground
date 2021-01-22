@@ -8,6 +8,7 @@ import {
   ButtonGroup,
   CircularProgress,
   Flex,
+  Skeleton,
   Text
 } from '@chakra-ui/react'
 import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
@@ -105,34 +106,40 @@ const TabManager = ({ tabData }) => {
         >
           {amountSpent < tabLimit ? `${numberToPrice(tabLimit - amountSpent, '$')} remaining` : 'Pay Now'}
         </Text>
-        <Box pt={8}>
-          {amountSpent < tabLimit
-            ? (
-              <ButtonGroup spacing={4}>
-                {[1, 2, 5].map(price => (
+        <Skeleton
+          isLoaded={tabData}
+          startColor='white'
+          endColor='white'
+        >
+          <Box pt={8}>
+            {amountSpent < tabLimit
+              ? (
+                <ButtonGroup spacing={4}>
+                  {[1, 2, 5].map(price => (
+                    <Button
+                      key={price}
+                      colorScheme='teal'
+                      variant='outline'
+                      size='lg'
+                      onClick={() => onContribute(price * 100)}
+                    >
+                      {`Contribute $${price}`}
+                    </Button>
+                  ))}
+                </ButtonGroup>)
+              : (
+                <Flex justify='center'>
                   <Button
-                    key={price}
+                    isLoading={isSettlingTab}
                     colorScheme='teal'
-                    variant='outline'
                     size='lg'
-                    onClick={() => onContribute(price * 100)}
+                    onClick={() => onSettleTab(tabData && tabData.id)}
                   >
-                    {`Contribute $${price}`}
+                    Settle Your Tab
                   </Button>
-                ))}
-              </ButtonGroup>)
-            : (
-              <Flex justify='center'>
-                <Button
-                  isLoading={isSettlingTab}
-                  colorScheme='teal'
-                  size='lg'
-                  onClick={() => onSettleTab(tabData && tabData.id)}
-                >
-                  Settle Your Tab
-                </Button>
-              </Flex>)}
-        </Box>
+                </Flex>)}
+          </Box>
+        </Skeleton>
       </Flex>
     </Box>
   )
