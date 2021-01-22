@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import NextLink from 'next/link'
 import {
   Alert,
@@ -8,7 +9,6 @@ import {
   Divider,
   Flex,
   Heading,
-  Image,
   Stack
 } from '@chakra-ui/react'
 import { ArrowBackIcon, LockIcon } from '@chakra-ui/icons'
@@ -20,14 +20,15 @@ import AppShell from '@/components/AppShell'
 import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
 import { humanReadablePrice } from '@/utils/price'
 
-const Product = ({ product }) => {
-  const [session] = useSession()
-  const [userHasAccess, setUserHasAccess] = useState()
+const Photo = ({ photo }) => {
+  const [session, sessionIsLoading] = useSession()
+  const [userHasAccess, setUserHasAccess] = useState(null)
   const expirationDate = new Date().setMinutes(59)
+  const offeringId = `playground-photo-${photo.id}`
 
   const { data } = useSWR(
-    session && product.id
-      ? ['/v1/access', session.accessToken, product.id]
+    session && photo.id
+      ? ['/v1/access', session.accessToken, offeringId]
       : null,
     (url, accessToken, offeringId) => fetchFromLaterpay(url, { accessToken, params: { offering_id: offeringId } })
     // see https://swr.vercel.app/docs/arguments#passing-objects
@@ -45,10 +46,13 @@ const Product = ({ product }) => {
       method: 'post',
       accessToken: session.accessToken,
       data: {
-        offering_id: product.id,
-        summary: product.title,
+        offering_id: offeringId,
+        metadata: {
+          tapper_playground: true
+        },
+        summary: photo.title,
         price: {
-          amount: product.price,
+          amount: photo.price,
           currency: 'USD'
         },
         payment_model: 'pay_merchant_later',
@@ -78,13 +82,13 @@ const Product = ({ product }) => {
                 variant='link'
               >
                 <ArrowBackIcon mr={1} />
-                View all kittens
+                View all photos
               </Button>
             </NextLink>
           </Box>
           <Divider borderColor='gray.300' mt='1rem !important' />
           <Heading>
-            {product.title}
+            {photo.title}
           </Heading>
           {userHasAccess && (
             <Alert
@@ -97,20 +101,24 @@ const Product = ({ product }) => {
               Your access to this picture will expire in {formatDistanceToNowStrict(expirationDate)}.
             </Alert>)}
           <Box position='relative'>
-            <Image
-              src={product.image}
-              alt={product.id}
-              fit='cover'
-              minW='800px'
-              maxH='1000px'
+            <Box
               borderRadius='lg'
               boxShadow='0 2px 6px rgba(0,0,0,0.2)'
               overflow='hidden'
-              opacity={userHasAccess ? '1' : '.25'}
               style={{
-                filter: userHasAccess ? 'none' : 'blur(.5rem)'
+                filter: userHasAccess ? 'none' : 'blur(.5rem)',
+                opacity: userHasAccess ? '1' : '.25'
               }}
-            />
+            >
+              <Box mb={-2}>
+                <Image
+                  src={`https://picsum.photos/id/${photo.id}/1280/960`}
+                  alt={photo.title}
+                  width={1280}
+                  height={960}
+                />
+              </Box>
+            </Box>
             {!userHasAccess && (
               <Stack
                 alignItems='center'
@@ -119,20 +127,23 @@ const Product = ({ product }) => {
                 position='absolute'
                 top='calc(50% - 5rem)'
               >
-                <LockIcon
-                  boxSize='5rem'
-                  color='teal.500'
-                  opacity='.5'
-                />
-                <Button
-                  colorScheme='teal'
-                  size='lg'
-                  onClick={() => session ? onPurchase() : signIn('laterpay')}
-                >
-                  {session
-                    ? `Purchase this picture for $${humanReadablePrice(product.price)}`
-                    : 'Sign in to view picture'}
-                </Button>
+                {!sessionIsLoading && (
+                  <>
+                    <LockIcon
+                      boxSize='5rem'
+                      color='teal.500'
+                      opacity='.5'
+                    />
+                    <Button
+                      colorScheme='teal'
+                      size='lg'
+                      onClick={() => session ? onPurchase() : signIn('laterpay')}
+                    >
+                      {session
+                        ? `Purchase this picture for $${humanReadablePrice(photo.price)}`
+                        : 'Sign in to view picture'}
+                    </Button>
+                  </>)}
               </Stack>)}
           </Box>
           <Divider borderColor='gray.300' />
@@ -146,7 +157,7 @@ const Product = ({ product }) => {
                 color: 'gray.700'
               }}
             >
-              Back to all kittens
+              Back to all photos
             </Button>
           </NextLink>
         </Stack>
@@ -156,27 +167,20 @@ const Product = ({ product }) => {
 }
 
 export async function getStaticProps ({ params }) {
-  const { productId } = params
-  const kittens = (await import('@/data/kittens.json')).data
-  const kitten = kittens.find(({ id }) => id === productId)
-  const product = {
-    id: kitten.id,
-    image: kitten.url,
-    title: kitten.name,
-    price: kitten.price
-  }
-
+  const { photoId } = params
+  const photos = (await import('@/data/photos.json')).data
+  const photo = photos.find(({ id }) => id === parseInt(photoId))
   return {
     props: {
-      product
+      photo
     }
   }
 }
 
 export async function getStaticPaths () {
-  const kittens = (await import('@/data/kittens.json')).data
-  const paths = kittens.map(({ id }) => {
-    return { params: { productId: id } }
+  const photos = (await import('@/data/photos.json')).data
+  const paths = photos.map(({ id }) => {
+    return { params: { photoId: id.toString() } }
   })
   return {
     paths,
@@ -184,4 +188,4 @@ export async function getStaticPaths () {
   }
 }
 
-export default Product
+export default Photo

@@ -1,23 +1,23 @@
 import { Box, Flex, Grid } from '@chakra-ui/react'
-import ProductCard from '@/components/ProductCard'
+import PhotoCard from '@/components/PhotoCard'
 
-const ProductsGrid = ({ products }) => {
+const PhotosGrid = ({ photos }) => {
   return (
     <Flex
       px={8}
-      py={6}
+      pt={6}
+      pb={20}
       justify='center'
     >
       <Grid
-        templateColumns={{ base: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }}
+        templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }}
         gap={6}
       >
-        {products.map(({ id, price, title, image }) => (
+        {photos.map(({ id, price, title }) => (
           <Box key={id}>
-            <ProductCard
+            <PhotoCard
               id={id}
               title={title}
-              image={image}
               price={price}
             />
           </Box>
@@ -27,4 +27,4 @@ const ProductsGrid = ({ products }) => {
   )
 }
 
-export default ProductsGrid
+export default PhotosGrid

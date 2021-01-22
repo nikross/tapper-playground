@@ -1,27 +1,19 @@
 import AppShell from '@/components/AppShell'
-import ProductsGrid from '@/components/ProductsGrid'
+import PhotosGrid from '@/components/PhotosGrid'
 
-const Home = ({ products }) => {
+const Home = ({ photos }) => {
   return (
     <AppShell>
-      <ProductsGrid products={products} />
+      <PhotosGrid photos={photos} />
     </AppShell>
   )
 }
 
 export async function getStaticProps () {
-  const kittens = (await import('@/data/kittens.json')).data
-  const products = kittens.map(({ id, price, ...kitten }, index) => {
-    return {
-      id,
-      image: kitten.url,
-      title: kitten.name,
-      price
-    }
-  })
+  const photos = (await import('@/data/photos.json')).data
   return {
     props: {
-      products
+      photos
     }
   }
 }

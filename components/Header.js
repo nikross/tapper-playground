@@ -40,8 +40,8 @@ const Header = () => {
         </NextLink>
         <NavItem
           href='/'
-          isActive={router.pathname.includes('/product')}
-          label='Kittens'
+          isActive={router.pathname.includes('/photos')}
+          label='Photos'
         />
         <NavItem
           href='/tab'

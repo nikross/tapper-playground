@@ -8,7 +8,7 @@ import JsonViewer from '@/components/JsonViewer'
 import MyTab from '@/components/MyTab'
 import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
 
-const Home = ({ products }) => {
+const Tab = () => {
   const [session] = useSession()
   const [tabData, setTabData] = useState(null)
 
@@ -52,4 +52,4 @@ const Home = ({ products }) => {
   )
 }
 
-export default Home
+export default Tab

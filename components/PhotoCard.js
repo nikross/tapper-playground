@@ -1,16 +1,17 @@
+import Image from 'next/image'
 import NextLink from 'next/link'
-import { Box, Heading, Image, Text } from '@chakra-ui/react'
+import { Box, Heading, Text } from '@chakra-ui/react'
 
-const ProductCard = ({ id, title, image }) => {
+const PhotoCard = ({ id, title, image }) => {
   const price = '2.00'
   return (
-    <NextLink href={`/products/${id}`}>
+    <NextLink href={`/photos/${id}`}>
       <a>
         <Box
           bg='white'
           borderRadius='lg'
           boxShadow='0 2px 4px rgba(0,0,0,0.1)'
-          w='15rem'
+          w='20rem'
           overflow='hidden'
           transition='box-shadow .1s ease-in-out'
           _hover={{
@@ -22,20 +23,24 @@ const ProductCard = ({ id, title, image }) => {
             p={2}
             bg='white'
           >
-            <Image
-              src={image}
-              alt={id}
-              fit='cover'
-              h='15rem'
+            <Box
+              h='12rem'
               w='full'
               mx='auto'
               borderRadius='md'
               overflow='hidden'
-            />
+            >
+              <Image
+                src={`https://picsum.photos/id/${id}/600/400`}
+                alt={title}
+                width={600}
+                height={400}
+              />
+            </Box>
           </Box>
           <Box
-            px={2}
-            pt={4}
+            px={3}
+            pt={1}
             pb={2}
           >
             <Heading
@@ -59,4 +64,4 @@ const ProductCard = ({ id, title, image }) => {
   )
 }
 
-export default ProductCard
+export default PhotoCard
