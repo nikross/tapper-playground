@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { getSession } from 'next-auth/client'
+import qs from 'qs'
 
 const BASE_URL = 'https://tapi.laterpay.net'
 
@@ -58,7 +59,39 @@ export default async (req, res) => {
       case 'payment':
         // Settle Tab via /v1/payment/finish/{tab_id}
         if (route[2] === 'finish') {
+          // Switch current token with client_credentials token
+          const clientCredentials = await handleRequest({
+            url: 'https://auth.laterpay.net/oauth2/token',
+            method: 'post',
+            headers: {
+              Authorization: 'Basic ' + Buffer.from((process.env.LP_CLIENT_ID + ':' + process.env.LP_CLIENT_SECRET)).toString('base64'),
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: qs.stringify({
+              grant_type: 'client_credentials',
+              scope: 'read write'
+            })
+          })
+          // Throw an error if the user doesn't own the Tab
+          const tabId = route[3]
+          const tab = await handleRequest({
+            url: `${BASE_URL}/v1/tabs/${tabId}`,
+            headers: {
+              Authorization: `Bearer ${clientCredentials.access_token}`
+            }
+          })
+          if (tab.user_id !== user.id) {
+            res.status(200).json({
+              error: {
+                message: 'User is not the owner of this Tab'
+              }
+            })
+            res.end()
+            return
+          }
           requestObject.method = 'post'
+          // Use the client_credentials access token to settle the Tab
+          requestObject.headers.Authorization = `Bearer ${clientCredentials.access_token}`
         }
         break
       default:
@@ -70,7 +103,9 @@ export default async (req, res) => {
     res.status(200).json(laterpayJsonResponse)
   } catch (error) {
     res.status(error.status || 500).json({
-      error: error.message
+      error: {
+        message: error.message
+      }
     })
   }
 }
