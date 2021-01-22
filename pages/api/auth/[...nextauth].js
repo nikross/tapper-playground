@@ -41,6 +41,15 @@ const options = {
     }
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    // Use JSON Web Tokens for session instead of database sessions.
+    // This option can be used with or without a database for users/accounts.
+    // Note: `jwt` is automatically set to `true` if no database is specified.
+    jwt: true,
+    // Seconds - How long until an idle session expires and is no longer valid.
+    maxAge: 30 * 60 // 30 minutes
+    // Laterpay's access tokens are valid for 60 minutes and next-auth doesn't support refresh_token flow, so keep sessions short.
+  },
   callbacks: {
     // Add properties to JWT before generation
     jwt: async (token, user, account, profile, isNewUser) => {
