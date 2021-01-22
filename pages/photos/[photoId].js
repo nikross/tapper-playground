@@ -59,15 +59,14 @@ const Photo = ({ photo }) => {
           currency: 'USD'
         },
         payment_model: 'pay_merchant_later',
-        sales_model: 'time_pass',
-        valid_timedelta: '5m'
+        sales_model: 'single_purchase'
       }
     })
     if (result.tab) {
       const { limit, status, total } = result.tab
       const success = status === 'open'
       success
-        ? toast.success(`${numberToPrice(limit - total, '$')} remaining`)
+        ? toast.success(`${numberToPrice(limit - total, '$')} remaining on your Tab`)
         : toast.error('Please settle your Tab')
     }
     // Revalidate access data
