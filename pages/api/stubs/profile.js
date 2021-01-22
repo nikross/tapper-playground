@@ -11,7 +11,7 @@ export default (req, res) => {
     const text = buff.toString('ascii')
     const tokenData = JSON.parse(text)
     res.status(200).json({
-      id: tokenData.sub,
+      id: 123,
       laterpayUserId: tokenData.sub,
       name: 'John Doe',
       email: 'john@doe.com',
