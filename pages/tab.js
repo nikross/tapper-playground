@@ -23,7 +23,6 @@ const Tab = () => {
 
   useEffect(() => {
     if (data) {
-      console.log({ data })
       const allTabs = Object.values(data)
       const currentTab =
         allTabs.find(tab => tab.status === 'full') ||

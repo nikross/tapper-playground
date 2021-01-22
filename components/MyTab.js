@@ -58,7 +58,6 @@ const MyTab = ({ tabData, userId }) => {
   const onSettleTab = async tabId => {
     setIsSettlingTab(true)
     if (tabId) {
-      console.log('settling tab', tabId)
       const result = await fetchFromLaterpay(`/v1/payment/finish/${tabId}`, {
         method: 'post',
         accessToken: session.accessToken

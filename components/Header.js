@@ -6,7 +6,6 @@ import { useSession, signIn, signOut } from 'next-auth/client'
 const Header = () => {
   const router = useRouter()
   const [session] = useSession()
-  console.log({ session })
   return (
     <Flex
       backgroundColor='white'

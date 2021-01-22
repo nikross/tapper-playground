@@ -55,9 +55,8 @@ export default async (req, res) => {
         requestObject.params = params
         break
       case 'payment':
-        // Settling Tab via /v1/payment/finish/{tab_id}
+        // Settle Tab via /v1/payment/finish/{tab_id}
         if (route[2] === 'finish') {
-          console.log('settle', { pathname })
           requestObject.method = 'post'
         }
         break
