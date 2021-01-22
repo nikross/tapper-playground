@@ -63,10 +63,11 @@ const Photo = ({ photo }) => {
         valid_timedelta: '5m'
       }
     })
-    if (result.detail) {
-      const success = result.detail.item_added
+    if (result.tab) {
+      const { limit, status, total } = result.tab
+      const success = status === 'open'
       success
-        ? toast.success('Purchase successful')
+        ? toast.success(`${numberToPrice(limit - total, '$')} remaining`)
         : toast.error('Please settle your Tab')
     }
     // Revalidate access data
