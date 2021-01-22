@@ -11,6 +11,7 @@ import {
   Skeleton,
   Text
 } from '@chakra-ui/react'
+import toast from 'react-hot-toast'
 import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
 import { numberToPrice } from '@/utils/price'
 
@@ -47,7 +48,13 @@ const TabManager = ({ tabData }) => {
         sales_model: 'contribution'
       }
     })
-    console.log(result)
+    if (result.tab) {
+      const { limit, status, total } = result.tab
+      const success = status === 'open'
+      success
+        ? toast.success(`${numberToPrice(limit - total, '$')} remaining on your Tab`)
+        : toast.error('Please settle your Tab')
+    }
     // Revalidate Tab data
     mutate(['/v1/tabs'])
   }
@@ -59,7 +66,9 @@ const TabManager = ({ tabData }) => {
         method: 'post',
         accessToken: session.accessToken
       })
-      console.log(result)
+      result.error
+        ? toast.error(result.error.message)
+        : toast.success('Tab settled')
       // Revalidate Tab data
       mutate(['/v1/tabs'])
     }
