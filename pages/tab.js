@@ -5,7 +5,8 @@ import { useSession } from 'next-auth/client'
 
 import AppShell from '@/components/AppShell'
 import JsonViewer from '@/components/JsonViewer'
-import MyTab from '@/components/MyTab'
+import SignInAlert from '@/components/SignInAlert'
+import TabManager from '@/components/TabManager'
 import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
 
 const Tab = () => {
@@ -40,12 +41,17 @@ const Tab = () => {
         alignItems='center'
         height='full'
         flex='1 0'
-        pt={20}
+        pt={32}
         px={4}
         maxW='full'
       >
-        <MyTab userId={session ? session.user.laterpayUserId : null} tabData={tabData} />
-        <JsonViewer tabData={tabData} />
+        {session
+          ? (
+            <>
+              <TabManager tabData={tabData} />
+              <JsonViewer tabData={tabData} />
+            </>)
+          : <SignInAlert />}
       </Flex>
     </AppShell>
   )

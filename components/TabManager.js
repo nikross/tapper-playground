@@ -3,10 +3,6 @@ import PropTypes from 'prop-types'
 import { mutate } from 'swr'
 import { useSession } from 'next-auth/client'
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Box,
   Button,
   ButtonGroup,
@@ -17,7 +13,7 @@ import {
 import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
 import { numberToPrice } from '@/utils/price'
 
-const MyTab = ({ tabData, userId }) => {
+const TabManager = ({ tabData }) => {
   const [session] = useSession()
   const [amountSpent, setAmountSpent] = useState(0)
   const [isSettlingTab, setIsSettlingTab] = useState(false)
@@ -69,43 +65,13 @@ const MyTab = ({ tabData, userId }) => {
     setIsSettlingTab(false)
   }
 
-  if (!userId) {
-    return (
-      <Box
-        backgroundColor='white'
-        borderRadius='lg'
-        width='700px'
-        maxWidth='full'
-        p={4}
-      >
-        <Alert
-          status='info'
-          variant='subtle'
-          flexDirection='column'
-          justifyContent='center'
-          textAlign='center'
-          height='200px'
-          borderRadius='md'
-        >
-          <AlertIcon boxSize='40px' mr={0} />
-          <AlertTitle mt={4} mb={1} fontSize='lg'>
-            Sign in to view your tab
-          </AlertTitle>
-          <AlertDescription maxWidth='sm'>
-            See top right corner.
-          </AlertDescription>
-        </Alert>
-      </Box>
-    )
-  }
-
   return (
     <Box
       backgroundColor='white'
       borderRadius='lg'
       width='700px'
       maxWidth='full'
-      p={userId ? 12 : 4}
+      p={12}
     >
       <Flex
         justifyContent='center'
@@ -172,9 +138,8 @@ const MyTab = ({ tabData, userId }) => {
   )
 }
 
-MyTab.propTypes = {
-  tabData: PropTypes.object,
-  userId: PropTypes.string
+TabManager.propTypes = {
+  tabData: PropTypes.object
 }
 
-export default MyTab
+export default TabManager
