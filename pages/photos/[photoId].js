@@ -160,7 +160,7 @@ const Photo = ({ photo }) => {
                       colorScheme='teal'
                       size='lg'
                       isLoading={isPurchasing}
-                      onClick={() => session ? onPurchase() : signIn()}
+                      onClick={() => session ? onPurchase() : signIn('laterpay')}
                     >
                       {session
                         ? `Purchase this photo for ${numberToPrice(photo.price, '$')}`

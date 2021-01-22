@@ -20,12 +20,9 @@ const options = {
       // But not specifying them results in an error.
       // See https://github.com/nextauthjs/next-auth/issues/209 and https://github.com/nextauthjs/next-auth/issues/1065
       profileUrl: `${process.env.NEXTAUTH_URL}/api/stubs/profile`,
-      profile: (profile) => {
+      profile: (p) => {
         return {
-          id: profile.id,
-          name: profile.name,
-          email: profile.email,
-          image: profile.picture
+          id: p.userId
         }
       },
       clientId: process.env.LP_CLIENT_ID,
@@ -38,7 +35,7 @@ const options = {
         Authorization: 'Basic ' + Buffer.from((process.env.LP_CLIENT_ID + ':' + process.env.LP_CLIENT_SECRET)).toString('base64')
       }
     }
-  ]/* ,
+  ],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     // Use JSON Web Tokens for session instead of database sessions.
@@ -73,7 +70,7 @@ const options = {
         return Promise.resolve(session)
       }
     }
-  } */
+  }
 }
 
 export default (req, res) => NextAuth(req, res, options)

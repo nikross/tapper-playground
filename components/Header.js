@@ -67,7 +67,7 @@ const Header = () => {
         <Button
           fontSize='1.125rem'
           variant='ghost'
-          onClick={() => session ? signOut() : signIn()}
+          onClick={() => session ? signOut() : signIn('laterpay')}
         >
           {session ? 'Sign out' : 'Sign in'}
         </Button>
