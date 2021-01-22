@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 
 // See https://next-auth.js.org/configuration/options
 const options = {
-  // debug: true,
+  debug: true,
   providers: [
     // Configure custom OAuth2 provider
     {
@@ -22,8 +22,7 @@ const options = {
       profileUrl: `${process.env.NEXTAUTH_URL}/api/stubs/profile`,
       profile: (profile) => {
         return {
-          id: profile.laterpayUserId,
-          laterpayUserId: profile.laterpayUserId,
+          id: 123,
           name: 'John',
           email: 'user@test.com',
           image: 'https://i.pravatar.cc/150'
@@ -33,7 +32,7 @@ const options = {
       // Don't specify clientSecret. Add it via Authoirzation header instead.
       // Reason: Hydra requires 'client_secret_basic'. But next-auth will use 'client_secret_post' when clientSecret is set in config.
       // See https://github.com/nextauthjs/next-auth/issues/950
-      // clientSecret: ***,
+      // clientSecret: '***',
       headers: {
         Accept: 'application/json',
         Authorization: 'Basic ' + Buffer.from((process.env.LP_CLIENT_ID + ':' + process.env.LP_CLIENT_SECRET)).toString('base64')
