@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-// import { mutate } from 'swr'
+import { mutate } from 'swr'
+import { useSession } from 'next-auth/client'
 import {
   Alert,
   AlertDescription,
@@ -8,17 +9,20 @@ import {
   AlertTitle,
   Box,
   Button,
+  ButtonGroup,
   CircularProgress,
   Flex,
-  SimpleGrid,
   Text
 } from '@chakra-ui/react'
+import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
 import { humanReadablePrice } from '@/utils/price'
 
 const MyTab = ({ tabData, userId }) => {
+  const [session] = useSession()
   const [amountSpent, setAmountSpent] = useState(0)
   const [isSettlingTab, setIsSettlingTab] = useState(false)
   const tabLimit = (tabData && tabData.limit) || 500
+
   useEffect(() => {
     let sumOfPurchases = 0
     if (tabData && tabData.purchases) {
@@ -27,33 +31,43 @@ const MyTab = ({ tabData, userId }) => {
     setAmountSpent(sumOfPurchases)
   }, [tabData])
 
-  const handlePurchase = async amount => {
+  const onContribute = async amount => {
     setAmountSpent(amountSpent + amount)
-    // const reqData = JSON.stringify({
-    //   user_id: userId,
-    //   cost: amount,
-    //   payment_model: 'pay_merchant_later'
-    // })
-    // await fetch('/api/laterpay/purchase', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: reqData
-    // })
-    // // Revalidate data from internal API
-    // mutate([`/v1/tabs/list/${userId}`])
+    const result = await fetchFromLaterpay('/v1/purchase', {
+      method: 'post',
+      accessToken: session.accessToken,
+      data: {
+        offering_id: 'playground-contribution',
+        metadata: {
+          tapper_playground: true
+        },
+        summary: 'Contribution',
+        price: {
+          amount,
+          currency: 'USD'
+        },
+        payment_model: 'pay_merchant_later',
+        sales_model: 'contribution'
+      }
+    })
+    console.log(result)
+    // Revalidate Tab data
+    mutate(['/v1/tabs'])
   }
 
-  const handleSettleTab = async tabId => {
+  const onSettleTab = async tabId => {
     setIsSettlingTab(true)
     if (tabId) {
       console.log('settling tab', tabId)
-      // await fetch(`/api/laterpay/settle?tabId=${tabId}`, { method: 'POST' })
-      // // Revalidate data from internal API
-      // mutate([`/v1/tabs/list/${userId}`])
-      setIsSettlingTab(false)
+      const result = await fetchFromLaterpay(`/v1/payment/finish/${tabId}`, {
+        method: 'post',
+        accessToken: session.accessToken
+      })
+      console.log(result)
+      // Revalidate Tab data
+      mutate(['/v1/tabs'])
     }
+    setIsSettlingTab(false)
   }
 
   if (!userId) {
@@ -94,62 +108,56 @@ const MyTab = ({ tabData, userId }) => {
       maxWidth='full'
       p={userId ? 12 : 4}
     >
-      <>
-        <Flex
-          justifyContent='center'
-          flexDirection='column'
-          alignItems='center'
-          mb={12}
-        >
-          <CircularProgress
-            capIsRound
-            isIndeterminate={!tabData} // display loading state when there's no data yet
-            size='150px'
-            color='teal.400'
-            thickness={5}
-            trackColor='gray.100'
-            value={amountSpent < tabLimit ? (amountSpent / tabLimit) * 100 : 100}
-            transform='rotate(180deg)'
-          />
-          <Text mt={6} fontSize='xl' fontWeight='700'>
-            {`You've spent $${humanReadablePrice(amountSpent)}`}
-          </Text>
-          <Text color='gray.500' fontSize='sm' fontWeight='600'>
-            {amountSpent < tabLimit ? `€${((tabLimit - amountSpent) / 100).toFixed(2)} left` : 'Pay Now'}
-          </Text>
-        </Flex>
-        {amountSpent < tabLimit
-          ? (
-            <SimpleGrid
-              columns={{ base: 1, md: 3 }}
-              spacing={6}
-              w='500px'
-              maxW='full'
-              mx='auto'
-            >
-              {[1, 2, 5].map(price => (
+      <Flex
+        justifyContent='center'
+        flexDirection='column'
+        alignItems='center'
+      >
+        <CircularProgress
+          capIsRound
+          isIndeterminate={!tabData} // display loading state when there's no data yet
+          size='150px'
+          color='teal.400'
+          thickness={5}
+          trackColor='gray.100'
+          value={amountSpent < tabLimit ? (amountSpent / tabLimit) * 100 : 100}
+          transform='rotate(180deg)'
+        />
+        <Text mt={6} fontSize='xl' fontWeight='700'>
+          {`You've spent $${humanReadablePrice(amountSpent)}`}
+        </Text>
+        <Text color='gray.500' fontSize='sm' fontWeight='600'>
+          {amountSpent < tabLimit ? `$${((tabLimit - amountSpent) / 100).toFixed(2)} left` : 'Pay Now'}
+        </Text>
+        <Box pt={8}>
+          {amountSpent < tabLimit
+            ? (
+              <ButtonGroup spacing={4}>
+                {[1, 2, 5].map(price => (
+                  <Button
+                    key={price}
+                    colorScheme='teal'
+                    variant='outline'
+                    size='lg'
+                    onClick={() => onContribute(price * 100)}
+                  >
+                    {`Contribute $${price}`}
+                  </Button>
+                ))}
+              </ButtonGroup>)
+            : (
+              <Flex justify='center'>
                 <Button
-                  key={price}
-                  display='inline-block'
-                  minW='150px'
-                  onClick={() => handlePurchase(price * 100)}
+                  isLoading={isSettlingTab}
+                  colorScheme='teal'
+                  size='lg'
+                  onClick={() => onSettleTab(tabData && tabData.id)}
                 >
-                  {`Contribute €${price}`}
+                  Settle Your Tab
                 </Button>
-              ))}
-            </SimpleGrid>)
-          : (
-            <Flex justify='center'>
-              <Button
-                isLoading={isSettlingTab}
-                colorScheme='teal'
-                size='lg'
-                onClick={() => handleSettleTab(tabData && tabData.id)}
-              >
-                Settle Your Tab
-              </Button>
-            </Flex>)}
-      </>
+              </Flex>)}
+        </Box>
+      </Flex>
     </Box>
   )
 }

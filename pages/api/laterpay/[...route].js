@@ -31,24 +31,40 @@ export default async (req, res) => {
         Authorization: `Bearer ${accessToken}`
       }
     }
+    if (!route[1]) {
+      const err = new Error('invalid route')
+      err.status = 404
+      throw err
+    }
 
-    switch (pathname) {
-      case '/v1/access':
+    switch (route[1]) { // route array example: ['v1', 'payment', 'finish', tabId]
+      // Check if user has access
+      case 'access':
         requestObject.params = {
           merchant_id: process.env.LP_MERCHANT_ID,
           ...params
         }
         break
-      case '/v1/purchase':
+      // Make a purchase
+      case 'purchase':
         requestObject.method = 'post'
         requestObject.data = req.body
         break
-      case '/v1/tabs':
+      // List Tabs
+      case 'tabs':
         requestObject.params = params
+        break
+      case 'payment':
+        // Settling Tab via /v1/payment/finish/{tab_id}
+        if (route[2] === 'finish') {
+          console.log('settle', { pathname })
+          requestObject.method = 'post'
+        }
         break
       default:
         res.status(404).json({ error: 'route not found' })
         res.end()
+        return
     }
     const laterpayJsonResponse = await handleRequest(requestObject)
     res.status(200).json(laterpayJsonResponse)
