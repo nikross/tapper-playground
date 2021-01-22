@@ -15,7 +15,7 @@ import {
   Text
 } from '@chakra-ui/react'
 import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
-import { humanReadablePrice } from '@/utils/price'
+import { numberToPrice } from '@/utils/price'
 
 const MyTab = ({ tabData, userId }) => {
   const [session] = useSession()
@@ -123,11 +123,22 @@ const MyTab = ({ tabData, userId }) => {
           value={amountSpent < tabLimit ? (amountSpent / tabLimit) * 100 : 100}
           transform='rotate(180deg)'
         />
-        <Text mt={6} fontSize='xl' fontWeight='700'>
-          {`You've spent $${humanReadablePrice(amountSpent)}`}
+        <Text
+          fontSize='xl'
+          fontWeight='700'
+          pt={6}
+          pb={2}
+        >
+          {`You've spent ${numberToPrice(amountSpent, '$')}`}
         </Text>
-        <Text color='gray.500' fontSize='sm' fontWeight='600'>
-          {amountSpent < tabLimit ? `$${((tabLimit - amountSpent) / 100).toFixed(2)} left` : 'Pay Now'}
+        <Text
+          color='gray.400'
+          fontSize='sm'
+          fontWeight='700'
+          letterSpacing='.5px'
+          textTransform='uppercase'
+        >
+          {amountSpent < tabLimit ? `${numberToPrice(tabLimit - amountSpent, '$')} remaining` : 'Pay Now'}
         </Text>
         <Box pt={8}>
           {amountSpent < tabLimit

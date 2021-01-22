@@ -13,16 +13,17 @@ import {
 } from '@chakra-ui/react'
 import { ArrowBackIcon, LockIcon } from '@chakra-ui/icons'
 import { useSession, signIn } from 'next-auth/client'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 import { formatDistanceToNowStrict } from 'date-fns'
 
 import AppShell from '@/components/AppShell'
 import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
-import { humanReadablePrice } from '@/utils/price'
+import { numberToPrice } from '@/utils/price'
 
 const Photo = ({ photo }) => {
   const [session, sessionIsLoading] = useSession()
   const [userHasAccess, setUserHasAccess] = useState(null)
+  const [isPurchasing, setIsPurchasing] = useState(null)
   const expirationDate = new Date().setMinutes(59)
   const offeringId = `playground-photo-${photo.id}`
 
@@ -42,6 +43,7 @@ const Photo = ({ photo }) => {
   }, [data])
 
   const onPurchase = async () => {
+    setIsPurchasing(true)
     const result = await fetchFromLaterpay('/v1/purchase', {
       method: 'post',
       accessToken: session.accessToken,
@@ -60,6 +62,9 @@ const Photo = ({ photo }) => {
         valid_timedelta: '1d'
       }
     })
+    // Revalidate access data
+    mutate('/v1/access')
+    setIsPurchasing(false)
     console.log(result)
   }
 
@@ -137,10 +142,11 @@ const Photo = ({ photo }) => {
                     <Button
                       colorScheme='teal'
                       size='lg'
+                      isLoading={isPurchasing}
                       onClick={() => session ? onPurchase() : signIn('laterpay')}
                     >
                       {session
-                        ? `Purchase this picture for $${humanReadablePrice(photo.price)}`
+                        ? `Purchase this picture for ${numberToPrice(photo.price, '$')}`
                         : 'Sign in to view picture'}
                     </Button>
                   </>)}

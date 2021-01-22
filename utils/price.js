@@ -1,3 +1,3 @@
-export const humanReadablePrice = number => {
-  return (number / 100).toFixed(2)
+export const numberToPrice = (amount, currency = '') => {
+  return currency + (amount / 100).toFixed(2)
 }
