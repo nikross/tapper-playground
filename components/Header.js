@@ -101,6 +101,7 @@ const NavItem = ({ label, href, ...props }) => {
           bg: 'teal.400'
         }}
         _hover={{
+          color: 'gray.600',
           textDecoration: 'none'
         }}
       >

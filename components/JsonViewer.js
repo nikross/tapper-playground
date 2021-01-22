@@ -12,6 +12,7 @@ import {
   Flex,
   useDisclosure
 } from '@chakra-ui/react'
+import { Search2Icon } from '@chakra-ui/icons'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 
@@ -24,18 +25,22 @@ const JsonViewer = ({ tabData }) => {
     <Flex
       direction='column'
       align='center'
-      pt={6}
+      py={6}
       minH={12}
       w='700px'
       maxW='full'
-      overflow='scroll'
     >
       <Button
-        variant='link'
-        colorScheme='blue'
-        mb={6}
-        onClick={onOpen}
+        variant='ghost'
+        color='gray.500'
+        size='lg'
+        leftIcon={<Search2Icon />}
+        _hover={{
+          bg: 'gray.200',
+          color: 'gray.700'
+        }}
         ref={btnRef}
+        onClick={onOpen}
       >
         Inspect Tab
       </Button>

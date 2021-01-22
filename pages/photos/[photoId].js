@@ -146,23 +146,11 @@ const Photo = ({ photo }) => {
                       onClick={() => session ? onPurchase() : signIn('laterpay')}
                     >
                       {session
-                        ? `Purchase this picture for ${numberToPrice(photo.price, '$')}`
                         : 'Sign in to view picture'}
                     </Button>
                   </>)}
               </Stack>)}
           </Box>
-          <Divider borderColor='gray.300' />
-          <NextLink href='/' passHref>
-            <Button
-              color='gray.500'
-              leftIcon={<ArrowBackIcon />}
-              size='lg'
-              variant='ghost'
-              _hover={{
-                color: 'gray.700'
-              }}
-            >
               Back to all photos
             </Button>
           </NextLink>
