@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 
 // See https://next-auth.js.org/configuration/options
 const options = {
-  debug: true,
+  // debug: true,
   providers: [
     // Configure custom OAuth2 provider
     {
