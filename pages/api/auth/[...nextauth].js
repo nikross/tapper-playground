@@ -42,33 +42,36 @@ const options = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     // Use JSON Web Tokens for session instead of database sessions.
-    // This option can be used with or without a database for users/accounts.
-    // Note: `jwt` is automatically set to `true` if no database is specified.
     jwt: true,
     // Seconds - How long until an idle session expires and is no longer valid.
-    maxAge: 30 * 60 // 30 minutes
+    maxAge: 60 * 60 // 60 minutes
     // Laterpay's access tokens are valid for 60 minutes and next-auth doesn't support refresh_token flow, so keep sessions short.
   },
   callbacks: {
-    // Add properties to JWT before generation
+    // Add properties to the JWT session for later use
+    // See https://github.com/nextauthjs/next-auth/issues/1177#issuecomment-764961383
     jwt: async (token, user, account, profile, isNewUser) => {
-      if (account) {
+      if (account?.accessToken) { // account will only be available on signin
+        // Decode token to get Laterpay user ID
         const { accessToken } = account
         const tokenPayload = accessToken.split('.')[1]
         const buff = Buffer.from(tokenPayload, 'base64')
         const text = buff.toString('ascii')
         const tokenData = JSON.parse(text)
+        // Add access token and user ID to the JWT session
         token.accessToken = accessToken
         token.laterpayUserId = tokenData.sub
       }
       return Promise.resolve(token)
     },
-    // Add property to session object
-    session: async (session, user) => {
-      // The user param equals JWT that has passed through the callback above (meaning it contains 'laterpayUserId')
-      session.accessToken = user.accessToken // Add property to session
-      session.user.laterpayUserId = user.laterpayUserId
-      return Promise.resolve(session)
+    // The session callback decides what should be visible to the user when reaching for useSession, getSession or /api/auth/session
+    // Add properties to session object to make them accessible from the browser
+    session: async (session, token) => { // token equals the return value from jwt callback
+      if (token?.accessToken) {
+        session.accessToken = token.accessToken
+        session.user.id = token.laterpayUserId
+        return Promise.resolve(session)
+      }
     }
   }
 }

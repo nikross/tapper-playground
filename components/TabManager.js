@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { mutate } from 'swr'
-import { useSession } from 'next-auth/client'
 import {
   Box,
   Button,
@@ -16,7 +15,6 @@ import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
 import { numberToPrice } from '@/utils/price'
 
 const TabManager = ({ tabData }) => {
-  const [session] = useSession()
   const [amountSpent, setAmountSpent] = useState(0)
   const [isSettlingTab, setIsSettlingTab] = useState(false)
   const tabLimit = (tabData && tabData.limit) || 500
@@ -33,7 +31,6 @@ const TabManager = ({ tabData }) => {
     setAmountSpent(amountSpent + amount)
     const result = await fetchFromLaterpay('/v1/purchase', {
       method: 'post',
-      accessToken: session.accessToken,
       data: {
         offering_id: 'playground-contribution',
         metadata: {
@@ -63,14 +60,15 @@ const TabManager = ({ tabData }) => {
     setIsSettlingTab(true)
     if (tabId) {
       const result = await fetchFromLaterpay(`/v1/payment/finish/${tabId}`, {
-        method: 'post',
-        accessToken: session.accessToken
+        method: 'post'
       })
       result.error
         ? toast.error(result.error.message)
         : toast.success('Tab settled')
       // Revalidate Tab data
-      mutate(['/v1/tabs'])
+      setTimeout(() => {
+        mutate(['/v1/tabs'])
+      }, 1000)
     }
     setIsSettlingTab(false)
   }

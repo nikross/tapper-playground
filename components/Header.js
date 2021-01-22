@@ -59,9 +59,9 @@ const Header = () => {
               isTruncated
               fontWeight='700'
               maxW='10rem'
-              title={session.user.laterpayUserId}
+              title={session.user.id}
             >
-              {session.user.laterpayUserId}
+              {session.user.id}
             </Box>
           </Box>}
         <Button

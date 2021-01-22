@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getSession } from 'next-auth/client'
 
 const BASE_URL = 'https://tapi.laterpay.net'
 
@@ -14,16 +15,16 @@ const handleRequest = async (request) => {
 }
 
 export default async (req, res) => {
+  const session = await getSession({ req })
   const { route, ...params } = req.query
   const pathname = `/${route.join('/')}`
   try {
-    const authHeader = req.headers.authorization
-    if (!authHeader || !authHeader.startsWith('Bearer')) {
+    const { accessToken, user } = session
+    if (!accessToken) {
       const err = new Error('access token missing')
       err.status = 403
       throw err
     }
-    const accessToken = authHeader.split('Bearer ')[1]
     // Prepare request object for call to Laterpay API
     const requestObject = {
       url: BASE_URL + pathname,

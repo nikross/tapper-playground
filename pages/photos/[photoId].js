@@ -30,9 +30,9 @@ const Photo = ({ photo }) => {
 
   const { data } = useSWR(
     session && photo.id
-      ? ['/v1/access', session.accessToken, offeringId]
+      ? ['/v1/access', offeringId]
       : null,
-    (url, accessToken, offeringId) => fetchFromLaterpay(url, { accessToken, params: { offering_id: offeringId } })
+    (url, offeringId) => fetchFromLaterpay(url, { params: { offering_id: offeringId } })
     // see https://swr.vercel.app/docs/arguments#passing-objects
   )
 
@@ -47,7 +47,6 @@ const Photo = ({ photo }) => {
     setIsPurchasing(true)
     const result = await fetchFromLaterpay('/v1/purchase', {
       method: 'post',
-      accessToken: session.accessToken,
       data: {
         offering_id: offeringId,
         metadata: {
