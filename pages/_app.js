@@ -26,7 +26,12 @@ const GlobalStyle = ({ children }) => (
 function MyApp ({ Component, pageProps }) {
   return (
     <ChakraProvider theme={theme}>
-      <AuthProvider session={pageProps.session}>
+      <AuthProvider
+        session={pageProps.session}
+        options={{
+          clientMaxAge: 60 // Re-fetch session if cache is older than 60 seconds
+        }}
+      >
         <GlobalStyle />
         <Toaster
           position='bottom-center'
