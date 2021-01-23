@@ -16,18 +16,14 @@ const options = {
       },
       accessTokenUrl: 'https://auth.laterpay.net/oauth2/token',
       authorizationUrl: 'https://auth.laterpay.net/oauth2/auth?response_type=code',
-      // According to the official docs, profileUrl and profile are optional (https://next-auth.js.org/configuration/providers#oauth-provider-options)
+      // According to the docs, profileUrl and profile are optional (https://next-auth.js.org/configuration/providers#oauth-provider-options)
       // But not specifying them results in an error.
       // See https://github.com/nextauthjs/next-auth/issues/209 and https://github.com/nextauthjs/next-auth/issues/1065
-      profileUrl: `${process.env.NEXTAUTH_URL}/api/stubs/profile`,
-      profile: (p) => {
-        return {
-          id: p.userId
-        }
-      },
+      profileUrl: `${process.env.NEXTAUTH_URL}/api/auth/profile`,
+      profile: (p) => ({ id: p.userId }),
       clientId: process.env.LP_CLIENT_ID,
-      // Don't specify clientSecret. Add it via Authoirzation header instead.
-      // Reason: Hydra requires 'client_secret_basic'. But next-auth will use 'client_secret_post' when clientSecret is set in config.
+      // Don't specify a clientSecret. Add it via the Authorization header instead.
+      // Reason: Hydra expects 'client_secret_basic'. But next-auth will use 'client_secret_post' when clientSecret is set in config.
       // See https://github.com/nextauthjs/next-auth/issues/950
       // clientSecret: '***',
       headers: {
@@ -41,7 +37,7 @@ const options = {
     // Use JSON Web Tokens for session instead of database sessions.
     jwt: true,
     // Seconds - How long until an idle session expires and is no longer valid.
-    maxAge: 60 * 60 // 60 minutes
+    maxAge: 60 * 60 // 1 hour
     // Laterpay's access tokens are valid for 60 minutes and next-auth doesn't support refresh_token flow, so keep sessions short.
   },
   callbacks: {
