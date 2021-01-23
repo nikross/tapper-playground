@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useRouter } from 'next/router'
 import { mutate } from 'swr'
 import {
   Box,
@@ -16,6 +17,7 @@ import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
 import { numberToPrice } from '@/utils/price'
 
 const TabManager = ({ tabData }) => {
+  const router = useRouter()
   const [amountSpent, setAmountSpent] = useState(0)
   const [isSettlingTab, setIsSettlingTab] = useState(false)
   const tabLimit = (tabData && tabData.limit) || 500
@@ -69,7 +71,13 @@ const TabManager = ({ tabData }) => {
         toast.error(result.error.message)
       } else {
         toast.success('Tab settled')
-        // Reset state
+
+        // If user just bought a photo, redirect back to that photo page
+        if (router.query.fromPhoto) {
+          router.push(`/photos/${router.query.fromPhoto}`)
+          return
+        }
+        // Otherwise, stay on the current page and reset state
         setAmountSpent(0)
         // Revalidate Tab data
         mutate('/v1/tabs')

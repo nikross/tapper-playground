@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router'
 import {
   Alert,
   AlertIcon,
@@ -23,6 +24,7 @@ import { getOfferingIdFromPhotoId } from '@/utils/offering'
 import { numberToPrice } from '@/utils/price'
 
 const Photo = ({ photo }) => {
+  const router = useRouter()
   const [session] = useSession()
   const [access, setAccess] = useState({})
   const [isPurchasing, setIsPurchasing] = useState(null)
@@ -72,6 +74,7 @@ const Photo = ({ photo }) => {
         })
       } else {
         toast.error('Please settle your Tab')
+        router.push(`/tab?fromPhoto=${photo.id}`)
       }
     }
     setIsPurchasing(false)
