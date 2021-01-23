@@ -71,16 +71,13 @@ const TabManager = ({ tabData }) => {
         toast.error(result.error.message)
       } else {
         toast.success('Tab settled')
-
-        // If user just bought a photo, redirect back to that photo page
-        if (router.query.fromPhoto) {
-          router.push(`/photos/${router.query.fromPhoto}`)
-          return
-        }
-        // Otherwise, stay on the current page and reset state
         setAmountSpent(0)
         // Revalidate Tab data
         mutate('/v1/tabs')
+        // If the user attempted to purchase a photo, redirect back to that purchase page
+        if (router.query.fromPhoto) {
+          router.push(`/photos/${router.query.fromPhoto}`)
+        }
       }
     }
     setIsSettlingTab(false)
