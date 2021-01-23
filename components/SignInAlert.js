@@ -9,10 +9,10 @@ import {
 const SignInAlert = () => {
   return (
     <Box
-      backgroundColor='white'
+      bg='white'
       borderRadius='lg'
-      width='700px'
-      maxWidth='full'
+      w='700px'
+      maxW='full'
       p={4}
     >
       <Alert
@@ -28,7 +28,7 @@ const SignInAlert = () => {
         <AlertTitle mt={4} mb={1} fontSize='lg'>
           Sign in to view your tab
         </AlertTitle>
-        <AlertDescription maxWidth='sm'>
+        <AlertDescription maxW='sm'>
           See top right corner.
         </AlertDescription>
       </Alert>

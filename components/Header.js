@@ -8,9 +8,9 @@ const Header = () => {
   const [session] = useSession()
   return (
     <Flex
-      backgroundColor='white'
+      bg='white'
       h='70px'
-      px={6}
+      px={{ base: 2, sm: 6 }}
       boxShadow='0 0 4px rgba(0,0,0,0.2)'
       position='fixed'
       top='0'

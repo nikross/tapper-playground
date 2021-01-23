@@ -8,7 +8,8 @@ import {
   CircularProgress,
   Flex,
   Skeleton,
-  Text
+  Text,
+  useBreakpointValue
 } from '@chakra-ui/react'
 import toast from 'react-hot-toast'
 import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
@@ -18,6 +19,7 @@ const TabManager = ({ tabData }) => {
   const [amountSpent, setAmountSpent] = useState(0)
   const [isSettlingTab, setIsSettlingTab] = useState(false)
   const tabLimit = (tabData && tabData.limit) || 500
+  const buttonGroupDirection = useBreakpointValue({ base: 'column', sm: 'row' })
 
   useEffect(() => {
     if (tabData) {
@@ -77,10 +79,10 @@ const TabManager = ({ tabData }) => {
 
   return (
     <Box
-      backgroundColor='white'
+      bg='white'
       borderRadius='lg'
-      width='700px'
-      maxWidth='full'
+      w='700px'
+      maxW='full'
       p={12}
     >
       <Flex
@@ -123,13 +125,17 @@ const TabManager = ({ tabData }) => {
           <Box pt={8}>
             {amountSpent < tabLimit
               ? (
-                <ButtonGroup spacing={4}>
+                <ButtonGroup
+                  flexDirection={buttonGroupDirection}
+                  spacing={{ base: 0, sm: 4 }}
+                >
                   {[1, 2, 5].map(price => (
                     <Button
                       key={price}
                       colorScheme='teal'
                       variant='outline'
                       size='lg'
+                      mb={{ base: 4, sm: 0 }}
                       onClick={() => onContribute(price * 100)}
                     >
                       {`Contribute $${price}`}
