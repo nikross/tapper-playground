@@ -36,15 +36,11 @@ const TabManager = ({ tabData }) => {
       method: 'post',
       data: {
         offering_id: 'playground-contribution',
-        metadata: {
-          tapper_playground: true
-        },
         summary: 'Contribution',
         price: {
           amount,
           currency: 'USD'
         },
-        payment_model: 'pay_merchant_later',
         sales_model: 'contribution'
       }
     })

@@ -50,7 +50,13 @@ export default async (req, res) => {
       // Make a purchase
       case 'purchase':
         requestObject.method = 'post'
-        requestObject.data = req.body
+        requestObject.data = {
+          metadata: {
+            tapper_playground: true
+          },
+          payment_model: 'pay_merchant_later',
+          ...req.body
+        }
         break
       // List Tabs
       case 'tabs':

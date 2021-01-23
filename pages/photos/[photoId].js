@@ -51,15 +51,11 @@ const Photo = ({ photo }) => {
       method: 'post',
       data: {
         offering_id: offeringId,
-        metadata: {
-          tapper_playground: true
-        },
         summary: photo.title,
         price: {
           amount: photo.price,
           currency: 'USD'
         },
-        payment_model: 'pay_merchant_later',
         sales_model: 'single_purchase'
       }
     })
