@@ -23,7 +23,7 @@ import { getOfferingIdFromPhotoId } from '@/utils/offering'
 import { numberToPrice } from '@/utils/price'
 
 const Photo = ({ photo }) => {
-  const [session, sessionIsLoading] = useSession()
+  const [session] = useSession()
   const [access, setAccess] = useState({})
   const [isPurchasing, setIsPurchasing] = useState(null)
   const offeringId = getOfferingIdFromPhotoId(photo.id)
@@ -154,24 +154,21 @@ const Photo = ({ photo }) => {
                 position='absolute'
                 top='calc(50% - 5rem)'
               >
-                {!sessionIsLoading && (
-                  <>
-                    <LockIcon
-                      boxSize='5rem'
-                      color='teal.500'
-                      opacity='.5'
-                    />
-                    <Button
-                      colorScheme='teal'
-                      size='lg'
-                      isLoading={isPurchasing}
-                      onClick={() => session ? onPurchase() : signIn('laterpay')}
-                    >
-                      {session
-                        ? `Purchase this photo for ${numberToPrice(photo.price, '$')}`
-                        : 'Sign in to view photo'}
-                    </Button>
-                  </>)}
+                <LockIcon
+                  boxSize='5rem'
+                  color='teal.500'
+                  opacity='.5'
+                />
+                <Button
+                  colorScheme='teal'
+                  size='lg'
+                  isLoading={isPurchasing}
+                  onClick={() => session ? onPurchase() : signIn('laterpay')}
+                >
+                  {session
+                    ? `Purchase this photo for ${numberToPrice(photo.price, '$')}`
+                    : 'Sign in to view photo'}
+                </Button>
               </Stack>)}
           </Box>
         </Stack>
