@@ -15,11 +15,8 @@ const Tab = () => {
 
   // Fetch user's tabs
   const { data } = useSWR(
-    session
-      ? ['/v1/tabs', session.user.id]
-      : null,
-    (url, userId) => fetchFromLaterpay(url, { params: { user_id: userId } })
-    // see https://swr.vercel.app/docs/arguments#passing-objects
+    session ? '/v1/tabs' : null,
+    fetchFromLaterpay
   )
 
   useEffect(() => {

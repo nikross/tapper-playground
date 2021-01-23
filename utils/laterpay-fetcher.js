@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-export const fetchFromLaterpay = async (url, { accessToken, ...axiosConfig }) => {
+export const fetchFromLaterpay = async (url, options) => {
   const response = await axios({
-    ...axiosConfig,
-    url: `/api/laterpay${url}`
+    url: `/api/laterpay${url}`,
+    ...options
   })
   return response.data
 }

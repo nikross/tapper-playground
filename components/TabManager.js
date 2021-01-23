@@ -51,7 +51,7 @@ const TabManager = ({ tabData }) => {
       if (success) {
         toast.success(`${numberToPrice(limit - total, '$')} remaining on your Tab`)
         // Revalidate Tab data
-        mutate(['/v1/tabs'])
+        mutate('/v1/tabs')
       } else {
         toast.error('Please settle your Tab')
       }
@@ -71,7 +71,7 @@ const TabManager = ({ tabData }) => {
         // Reset state
         setAmountSpent(0)
         // Revalidate Tab data
-        mutate(['/v1/tabs'])
+        mutate('/v1/tabs')
       }
     }
     setIsSettlingTab(false)

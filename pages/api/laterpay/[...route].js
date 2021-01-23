@@ -54,7 +54,7 @@ export default async (req, res) => {
         break
       // List Tabs
       case 'tabs':
-        requestObject.params = params
+        // no additional config needed
         break
       // Settle a Tab
       case 'payment':
