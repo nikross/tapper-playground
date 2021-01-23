@@ -1,83 +1,26 @@
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { useRouter } from 'next/router'
-import { mutate } from 'swr'
 import {
   Box,
-  Button,
-  ButtonGroup,
   CircularProgress,
   Flex,
   Skeleton,
-  Text,
-  useBreakpointValue
+  Text
 } from '@chakra-ui/react'
-import toast from 'react-hot-toast'
-import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
+
+import ContributeButtons from '@/components/ContributeButtons'
+import SettleTabButton from '@/components/SettleTabButton'
 import { numberToPrice } from '@/utils/price'
 
 const TabManager = ({ tabData }) => {
-  const router = useRouter()
   const [amountSpent, setAmountSpent] = useState(0)
-  const [isSettlingTab, setIsSettlingTab] = useState(false)
   const tabLimit = (tabData && tabData.limit) || 500
-  const buttonGroupDirection = useBreakpointValue({ base: 'column', md: 'row' })
-  const contributionOptions = [100, 200, 500]
 
   useEffect(() => {
     if (tabData) {
       setAmountSpent(tabData.total || 0)
     }
   }, [tabData])
-
-  const onContribute = async amount => {
-    setAmountSpent(amountSpent + amount)
-    const result = await fetchFromLaterpay('/v1/purchase', {
-      method: 'post',
-      data: {
-        offering_id: 'playground-contribution',
-        summary: 'Contribution',
-        price: {
-          amount,
-          currency: 'USD'
-        },
-        sales_model: 'contribution'
-      }
-    })
-    if (result.tab) {
-      const { limit, status, total } = result.tab
-      const success = status === 'open'
-      if (success) {
-        toast.success(`${numberToPrice(limit - total, 'USD')} remaining on your Tab`)
-        // Revalidate Tab data
-        mutate('/v1/tabs')
-      } else {
-        toast.error('Please settle your Tab')
-      }
-    }
-  }
-
-  const onSettleTab = async tabId => {
-    setIsSettlingTab(true)
-    if (tabId) {
-      const result = await fetchFromLaterpay(`/v1/payment/finish/${tabId}`, {
-        method: 'post'
-      })
-      if (result.error) {
-        toast.error(result.error.message)
-      } else {
-        toast.success('Tab settled')
-        setAmountSpent(0)
-        // Revalidate Tab data
-        mutate('/v1/tabs')
-        // If the user attempted to purchase a photo, redirect back to that purchase page
-        if (router.query.fromPhoto) {
-          router.push(`/photos/${router.query.fromPhoto}`)
-        }
-      }
-    }
-    setIsSettlingTab(false)
-  }
 
   return (
     <Box
@@ -128,35 +71,13 @@ const TabManager = ({ tabData }) => {
         >
           <Box pt={8}>
             {amountSpent < tabLimit
-              ? (
-                <ButtonGroup
-                  flexDirection={buttonGroupDirection}
-                  spacing={{ base: 0, md: 4 }}
-                >
-                  {contributionOptions.map(price => (
-                    <Button
-                      key={price}
-                      colorScheme='teal'
-                      variant='outline'
-                      size='lg'
-                      mb={{ base: 4, md: 0 }}
-                      onClick={() => onContribute(price)}
-                    >
-                      {`Contribute ${numberToPrice(price, 'USD')}`}
-                    </Button>
-                  ))}
-                </ButtonGroup>)
-              : (
-                <Flex justify='center'>
-                  <Button
-                    isLoading={isSettlingTab}
-                    colorScheme='teal'
-                    size='lg'
-                    onClick={() => onSettleTab(tabData && tabData.id)}
-                  >
-                    Settle Your Tab
-                  </Button>
-                </Flex>)}
+              ? <ContributeButtons
+                  incrementAmountSpent={contributionAmount => setAmountSpent(amountSpent + contributionAmount)}
+                />
+              : <SettleTabButton
+                  resetAmountSpent={() => setAmountSpent(0)}
+                  tabId={tabData && tabData.id}
+                />}
           </Box>
         </Skeleton>
       </Flex>
