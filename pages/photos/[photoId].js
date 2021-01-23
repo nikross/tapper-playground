@@ -65,7 +65,7 @@ const Photo = ({ photo }) => {
       const { limit, status, total } = result.tab
       const success = status === 'open'
       if (success) {
-        toast.success(`${numberToPrice(limit - total, '$')} remaining on your Tab`)
+        toast.success(`${numberToPrice(limit - total, 'USD')} remaining on your Tab`)
         // Revalidate access data
         mutate({
           access: { ...data.access, has_access: true }
@@ -166,7 +166,7 @@ const Photo = ({ photo }) => {
                   onClick={() => session ? onPurchase() : signIn('laterpay')}
                 >
                   {session
-                    ? `Purchase this photo for ${numberToPrice(photo.price, '$')}`
+                    ? `Purchase this photo for ${numberToPrice(photo.price, 'USD')}`
                     : 'Sign in to view photo'}
                 </Button>
               </Stack>)}

@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import NextLink from 'next/link'
 import { Box, Heading, Text } from '@chakra-ui/react'
+import { numberToPrice } from '@/utils/price'
 
-const PhotoCard = ({ id, title, image }) => {
-  const price = '2.00'
+const PhotoCard = ({ id, title, price }) => {
   return (
     <NextLink href={`/photos/${id}`}>
       <a>
@@ -55,7 +55,7 @@ const PhotoCard = ({ id, title, image }) => {
               color='teal.600'
               fontWeight='700'
             >
-              {`$${price}`}
+              {numberToPrice(price, 'USD')}
             </Text>
           </Box>
         </Box>

@@ -20,6 +20,7 @@ const TabManager = ({ tabData }) => {
   const [isSettlingTab, setIsSettlingTab] = useState(false)
   const tabLimit = (tabData && tabData.limit) || 500
   const buttonGroupDirection = useBreakpointValue({ base: 'column', sm: 'row' })
+  const contributionOptions = [100, 200, 500]
 
   useEffect(() => {
     if (tabData) {
@@ -49,7 +50,7 @@ const TabManager = ({ tabData }) => {
       const { limit, status, total } = result.tab
       const success = status === 'open'
       if (success) {
-        toast.success(`${numberToPrice(limit - total, '$')} remaining on your Tab`)
+        toast.success(`${numberToPrice(limit - total, 'USD')} remaining on your Tab`)
         // Revalidate Tab data
         mutate('/v1/tabs')
       } else {
@@ -106,7 +107,7 @@ const TabManager = ({ tabData }) => {
           pt={6}
           pb={2}
         >
-          {`You've spent ${numberToPrice(amountSpent, '$')}`}
+          {`You've spent ${numberToPrice(amountSpent, 'USD')}`}
         </Text>
         <Text
           color='gray.400'
@@ -115,7 +116,9 @@ const TabManager = ({ tabData }) => {
           letterSpacing='.5px'
           textTransform='uppercase'
         >
-          {amountSpent < tabLimit ? `${numberToPrice(tabLimit - amountSpent, '$')} remaining` : 'Pay Now'}
+          {amountSpent < tabLimit
+            ? `${numberToPrice(tabLimit - amountSpent, 'USD')} remaining`
+            : 'Pay Now'}
         </Text>
         <Skeleton
           isLoaded={tabData}
@@ -129,16 +132,16 @@ const TabManager = ({ tabData }) => {
                   flexDirection={buttonGroupDirection}
                   spacing={{ base: 0, sm: 4 }}
                 >
-                  {[1, 2, 5].map(price => (
+                  {contributionOptions.map(price => (
                     <Button
                       key={price}
                       colorScheme='teal'
                       variant='outline'
                       size='lg'
                       mb={{ base: 4, sm: 0 }}
-                      onClick={() => onContribute(price * 100)}
+                      onClick={() => onContribute(price)}
                     >
-                      {`Contribute $${price}`}
+                      {`Contribute ${numberToPrice(price, 'USD')}`}
                     </Button>
                   ))}
                 </ButtonGroup>)
