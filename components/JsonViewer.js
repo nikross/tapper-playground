@@ -19,8 +19,6 @@ import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 const JsonViewer = ({ tabData }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = useRef()
-
-  if (!tabData) return <Box h={12} />
   return (
     <Flex
       direction='column'
@@ -71,6 +69,10 @@ const JsonViewer = ({ tabData }) => {
       </Drawer>
     </Flex>
   )
+}
+
+JsonViewer.defaultProps = {
+  tabData: {}
 }
 
 JsonViewer.propTypes = {
