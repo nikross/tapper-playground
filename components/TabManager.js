@@ -21,7 +21,7 @@ const TabManager = ({ tabData }) => {
   const [amountSpent, setAmountSpent] = useState(0)
   const [isSettlingTab, setIsSettlingTab] = useState(false)
   const tabLimit = (tabData && tabData.limit) || 500
-  const buttonGroupDirection = useBreakpointValue({ base: 'column', sm: 'row' })
+  const buttonGroupDirection = useBreakpointValue({ base: 'column', md: 'row' })
   const contributionOptions = [100, 200, 500]
 
   useEffect(() => {
@@ -135,7 +135,7 @@ const TabManager = ({ tabData }) => {
               ? (
                 <ButtonGroup
                   flexDirection={buttonGroupDirection}
-                  spacing={{ base: 0, sm: 4 }}
+                  spacing={{ base: 0, md: 4 }}
                 >
                   {contributionOptions.map(price => (
                     <Button
@@ -143,7 +143,7 @@ const TabManager = ({ tabData }) => {
                       colorScheme='teal'
                       variant='outline'
                       size='lg'
-                      mb={{ base: 4, sm: 0 }}
+                      mb={{ base: 4, md: 0 }}
                       onClick={() => onContribute(price)}
                     >
                       {`Contribute ${numberToPrice(price, 'USD')}`}

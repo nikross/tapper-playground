@@ -55,7 +55,7 @@ const Tab = () => {
         alignItems='center'
         height='full'
         flex='1 0'
-        pt={32}
+        pt={{ base: 8, md: 32 }}
         px={4}
         maxW='full'
       >
