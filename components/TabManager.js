@@ -12,7 +12,7 @@ import ContributeButtons from '@/components/ContributeButtons'
 import SettleTabButton from '@/components/SettleTabButton'
 import { numberToPrice } from '@/utils/price'
 
-const TabManager = ({ tabData }) => {
+const TabManager = ({ isValidating, tabData }) => {
   const [amountSpent, setAmountSpent] = useState(0)
   const tabLimit = (tabData && tabData.limit) || 500
 
@@ -37,7 +37,7 @@ const TabManager = ({ tabData }) => {
       >
         <CircularProgress
           capIsRound
-          isIndeterminate={!tabData} // display loading state when there's no data yet
+          isIndeterminate={!tabData || isValidating} // display loading state when there's no data yet
           size='150px'
           color='teal.400'
           thickness={5}

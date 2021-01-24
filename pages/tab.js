@@ -15,7 +15,7 @@ const Tab = () => {
   const [tabData, setTabData] = useState(null)
 
   // Fetch user's tabs
-  const { data } = useSWR(
+  const { data, isValidating } = useSWR(
     session ? '/v1/tabs' : null,
     fetchFromLaterpay
   )
@@ -53,7 +53,7 @@ const Tab = () => {
         {session
           ? (
             <>
-              <TabManager tabData={tabData} />
+              <TabManager tabData={tabData} isValidating={isValidating} />
               <JsonViewer tabData={tabData} />
             </>)
           : <SignInAlert />}
