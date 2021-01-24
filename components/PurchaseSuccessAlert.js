@@ -1,5 +1,5 @@
 import { Alert, AlertIcon } from '@chakra-ui/react'
-import { formatDistanceToNowStrict } from 'date-fns'
+import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict'
 
 const PurchaseSuccessAlert = ({ accessExpiryDate }) => {
   if (Date.parse(accessExpiryDate)) { // Validate date string
