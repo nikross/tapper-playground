@@ -12,9 +12,7 @@ const Home = ({ photos }) => {
 export async function getStaticProps () {
   const photos = (await import('@/data/photos.json')).data
   return {
-    props: {
-      photos
-    }
+    props: { photos }
   }
 }
 

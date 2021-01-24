@@ -1,37 +1,31 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import NextLink from 'next/link'
-import { useRouter } from 'next/router'
 import {
-  Alert,
-  AlertIcon,
   Box,
   Button,
   Divider,
   Flex,
   Heading,
-  Spinner,
   Stack
 } from '@chakra-ui/react'
-import { ArrowBackIcon, LockIcon } from '@chakra-ui/icons'
-import { useSession, signIn } from 'next-auth/client'
+import { ArrowBackIcon } from '@chakra-ui/icons'
+import { useSession } from 'next-auth/client'
 import useSWR from 'swr'
-import { formatDistanceToNowStrict } from 'date-fns'
-import toast from 'react-hot-toast'
 
 import AppShell from '@/components/AppShell'
+import LoadingSpinner from '@/components/LoadingSpinner'
+import Paywall from '@/components/Paywall'
+import PurchaseSuccessAlert from '@/components/PurchaseSuccessAlert'
 import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
 import { getOfferingIdFromPhotoId } from '@/utils/offering'
-import { numberToPrice } from '@/utils/price'
 
 const Photo = ({ photo }) => {
-  const router = useRouter()
   const [session] = useSession()
   const [access, setAccess] = useState({})
-  const [isPurchasing, setIsPurchasing] = useState(null)
   const offeringId = getOfferingIdFromPhotoId(photo.id)
 
-  const { data, isValidating, mutate } = useSWR(
+  const { data, isValidating } = useSWR(
     session && photo.id
       ? ['/v1/access', offeringId]
       : null,
@@ -45,37 +39,6 @@ const Photo = ({ photo }) => {
       setAccess(data.access)
     }
   }, [data])
-
-  const onPurchase = async () => {
-    setIsPurchasing(true)
-    const result = await fetchFromLaterpay('/v1/purchase', {
-      method: 'post',
-      data: {
-        offering_id: offeringId,
-        summary: photo.title,
-        price: {
-          amount: photo.price,
-          currency: 'USD'
-        },
-        sales_model: 'single_purchase'
-      }
-    })
-    if (result.tab) {
-      const { limit, status, total } = result.tab
-      const success = status === 'open'
-      if (success) {
-        toast.success(`${numberToPrice(limit - total, 'USD')} remaining on your Tab`)
-        // Revalidate access data
-        mutate({
-          access: { ...data.access, has_access: true }
-        })
-      } else {
-        toast.error('Please settle your Tab')
-        router.push(`/tab?fromPhoto=${photo.id}`)
-      }
-    }
-    setIsPurchasing(false)
-  }
 
   return (
     <AppShell>
@@ -105,27 +68,7 @@ const Photo = ({ photo }) => {
             {photo.title}
           </Heading>
           {access.has_access && (
-            access.valid_to
-              ? (
-                <Alert
-                  borderRadius='md'
-                  color='blue.800'
-                  fontWeight='500'
-                  status='info'
-                >
-                  <AlertIcon />
-                  Your access to this photo will expire in {formatDistanceToNowStrict(new Date(access.valid_to))}.
-                </Alert>)
-              : (
-                <Alert
-                  borderRadius='md'
-                  color='green.800'
-                  fontWeight='500'
-                  status='success'
-                >
-                  <AlertIcon />
-                  You have purchased this photo.
-                </Alert>))}
+            <PurchaseSuccessAlert accessExpiryDate={access.valid_to} />)}
           <Box position='relative'>
             <Box
               borderRadius='lg'
@@ -145,42 +88,15 @@ const Photo = ({ photo }) => {
                 />
               </Box>
             </Box>
-            {isValidating && !access.has_access && ( // Show loading state while access check is running
-              <Spinner
-                thickness='3px'
-                speed='0.5s'
-                emptyColor='gray.400'
-                color='teal.400'
-                size='xl'
-                position='absolute'
-                top='calc(50% - 1.5rem)'
-                left='calc(50% - 1.5rem)'
-              />)}
+            {isValidating && !access.has_access && (
+              // Show loading spinner while access check is running
+              <LoadingSpinner />)}
             {(!session || (access.has_access === false && !isValidating)) && (
-              // Show this when user isn't signed in or when the access check was negative
-              <Stack
-                alignItems='center'
-                spacing={6}
-                w='full'
-                position='absolute'
-                top='calc(50% - 5rem)'
-              >
-                <LockIcon
-                  boxSize='5rem'
-                  color='teal.500'
-                  opacity='.5'
-                />
-                <Button
-                  colorScheme='teal'
-                  size='lg'
-                  isLoading={isPurchasing}
-                  onClick={() => session ? onPurchase() : signIn('laterpay')}
-                >
-                  {session
-                    ? `Purchase this photo for ${numberToPrice(photo.price, 'USD')}`
-                    : 'Sign in to view photo'}
-                </Button>
-              </Stack>)}
+              // Show paywall when user isn't signed in or when the access check was negative
+              <Paywall
+                offeringId={offeringId}
+                photo={photo}
+              />)}
           </Box>
         </Stack>
       </Flex>
@@ -193,9 +109,7 @@ export async function getStaticProps ({ params }) {
   const photos = (await import('@/data/photos.json')).data
   const photo = photos.find(({ id }) => id === parseInt(photoId))
   return {
-    props: {
-      photo
-    }
+    props: { photo }
   }
 }
 

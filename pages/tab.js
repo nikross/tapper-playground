@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
-import { Flex, Spinner } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 import { useSession } from 'next-auth/client'
 
 import AppShell from '@/components/AppShell'
 import JsonViewer from '@/components/JsonViewer'
+import LoadingSpinner from '@/components/LoadingSpinner'
 import SignInAlert from '@/components/SignInAlert'
 import TabManager from '@/components/TabManager'
 import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
@@ -32,16 +33,7 @@ const Tab = () => {
   if (sessionIsLoading) {
     return (
       <AppShell>
-        <Spinner
-          thickness='3px'
-          speed='0.5s'
-          emptyColor='gray.300'
-          color='teal.400'
-          size='xl'
-          position='absolute'
-          top='calc(50% - 1.5rem)'
-          left='calc(50% - 1.5rem)'
-        />
+        <LoadingSpinner />
       </AppShell>
     )
   }
