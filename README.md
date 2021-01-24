@@ -32,9 +32,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## Environment variables
 
 ```
-LP_CLIENT_ID=
-LP_CLIENT_SECRET=
-LP_MERCHANT_ID=
+LATERPAY_CLIENT_ID=
+LATERPAY_CLIENT_SECRET=
+LATERPAY_MERCHANT_ID=
 NEXTAUTH_SECRET=
 NEXTAUTH_URL=
 ```

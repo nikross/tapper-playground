@@ -43,7 +43,7 @@ export default async (req, res) => {
       // Check if user has access
       case 'access':
         requestObject.params = {
-          merchant_id: process.env.LP_MERCHANT_ID,
+          merchant_id: process.env.LATERPAY_MERCHANT_ID,
           ...params
         }
         break
@@ -71,7 +71,7 @@ export default async (req, res) => {
             url: 'https://auth.laterpay.net/oauth2/token',
             method: 'post',
             headers: {
-              Authorization: 'Basic ' + Buffer.from((process.env.LP_CLIENT_ID + ':' + process.env.LP_CLIENT_SECRET)).toString('base64'),
+              Authorization: 'Basic ' + Buffer.from((process.env.LATERPAY_CLIENT_ID + ':' + process.env.LATERPAY_CLIENT_SECRET)).toString('base64'),
               'Content-Type': 'application/x-www-form-urlencoded'
             },
             data: qs.stringify({

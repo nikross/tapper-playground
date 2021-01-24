@@ -21,14 +21,14 @@ const options = {
       // See https://github.com/nextauthjs/next-auth/issues/209 and https://github.com/nextauthjs/next-auth/issues/1065
       profileUrl: `${process.env.NEXTAUTH_URL}/api/auth/profile`,
       profile: (p) => ({ id: p.userId }),
-      clientId: process.env.LP_CLIENT_ID,
+      clientId: process.env.LATERPAY_CLIENT_ID,
       // Don't specify a clientSecret. Add it via the Authorization header instead.
       // Reason: Hydra expects 'client_secret_basic'. But next-auth will use 'client_secret_post' when clientSecret is set in config.
       // See https://github.com/nextauthjs/next-auth/issues/950
       // clientSecret: '***',
       headers: {
         Accept: 'application/json',
-        Authorization: 'Basic ' + Buffer.from((process.env.LP_CLIENT_ID + ':' + process.env.LP_CLIENT_SECRET)).toString('base64')
+        Authorization: 'Basic ' + Buffer.from((process.env.LATERPAY_CLIENT_ID + ':' + process.env.LATERPAY_CLIENT_SECRET)).toString('base64')
       }
     }
   ],
