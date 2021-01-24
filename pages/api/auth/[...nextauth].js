@@ -45,15 +45,11 @@ const options = {
     // See https://github.com/nextauthjs/next-auth/issues/1177#issuecomment-764961383
     jwt: async (token, user, account, profile, isNewUser) => {
       if (account?.accessToken) { // account will only be available on signin
-        // Decode token to get Laterpay user ID
-        const { accessToken } = account
-        const tokenPayload = accessToken.split('.')[1]
-        const buff = Buffer.from(tokenPayload, 'base64')
-        const text = buff.toString('ascii')
-        const tokenData = JSON.parse(text)
+        const { accessToken, id } = account
         // Add access token and user ID to the JWT session
         token.accessToken = accessToken
-        token.laterpayUserId = tokenData.sub
+        token.laterpayUserId = id
+        // id is derived from the decoded access token (see /api/auth/profile for more info)
       }
       return Promise.resolve(token)
     },
