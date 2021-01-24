@@ -10,6 +10,7 @@ import {
   Divider,
   Flex,
   Heading,
+  Spinner,
   Stack
 } from '@chakra-ui/react'
 import { ArrowBackIcon, LockIcon } from '@chakra-ui/icons'
@@ -30,7 +31,7 @@ const Photo = ({ photo }) => {
   const [isPurchasing, setIsPurchasing] = useState(null)
   const offeringId = getOfferingIdFromPhotoId(photo.id)
 
-  const { data, mutate } = useSWR(
+  const { data, isValidating, mutate } = useSWR(
     session && photo.id
       ? ['/v1/access', offeringId]
       : null,
@@ -144,8 +145,19 @@ const Photo = ({ photo }) => {
                 />
               </Box>
             </Box>
-            {(!session || access.has_access === false) && (
-              // Don't show this when user is signed in but the request to /access hasn't finished yet
+            {isValidating && ( // Show loading state while access check is running
+              <Spinner
+                thickness='3px'
+                speed='0.5s'
+                emptyColor='gray.400'
+                color='teal.400'
+                size='xl'
+                position='absolute'
+                top='calc(50% - 1.5rem)'
+                left='calc(50% - 1.5rem)'
+              />)}
+            {(!session || (access.has_access === false && !isValidating)) && (
+              // Show this when user isn't signed in or when the access check was negative
               <Stack
                 alignItems='center'
                 spacing={6}
