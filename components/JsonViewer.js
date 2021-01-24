@@ -14,8 +14,8 @@ import {
 } from '@chakra-ui/react'
 import { Search2Icon } from '@chakra-ui/icons'
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter'
-import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json'
-import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/docco'
+import json from 'react-syntax-highlighter/dist/cjs/languages/hljs/json'
+import docco from 'react-syntax-highlighter/dist/cjs/styles/hljs/docco'
 
 SyntaxHighlighter.registerLanguage('json', json)
 
@@ -77,7 +77,6 @@ const JsonViewer = ({ tabData }) => {
     </Flex>
   )
 }
-
 JsonViewer.defaultProps = {
   tabData: {}
 }
