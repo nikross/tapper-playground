@@ -21,7 +21,7 @@ const Tab = () => {
   )
 
   useEffect(() => {
-    if (data) {
+    if (data && data.length) {
       const currentTab =
         data.find(tab => tab.status === 'full') ||
         data.find(tab => tab.status === 'open') ||
