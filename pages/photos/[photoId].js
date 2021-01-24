@@ -145,7 +145,7 @@ const Photo = ({ photo }) => {
                 />
               </Box>
             </Box>
-            {isValidating && ( // Show loading state while access check is running
+            {isValidating && !access.has_access && ( // Show loading state while access check is running
               <Spinner
                 thickness='3px'
                 speed='0.5s'
