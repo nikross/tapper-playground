@@ -72,7 +72,7 @@ const TabManager = ({ tabData }) => {
           <Box pt={8}>
             {amountSpent < tabLimit
               ? <ContributeButtons
-                  incrementAmountSpent={contributionAmount => setAmountSpent(amountSpent + contributionAmount)}
+                  incrementTabTotal={contributionAmount => setAmountSpent(amountSpent + contributionAmount)}
                 />
               : <SettleTabButton
                   resetAmountSpent={() => setAmountSpent(0)}

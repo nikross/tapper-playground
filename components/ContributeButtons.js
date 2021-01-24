@@ -8,12 +8,12 @@ import toast from 'react-hot-toast'
 import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
 import { numberToPrice } from '@/utils/price'
 
-const ContributeButtons = ({ incrementAmountSpent }) => {
+const ContributeButtons = ({ incrementTabTotal }) => {
   const buttonGroupDirection = useBreakpointValue({ base: 'column', md: 'row' })
   const contributionOptions = [100, 200, 500]
 
   const onContribute = async amount => {
-    incrementAmountSpent(amount)
+    incrementTabTotal(amount)
     const result = await fetchFromLaterpay('/v1/purchase', {
       method: 'post',
       data: {
