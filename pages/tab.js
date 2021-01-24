@@ -21,10 +21,9 @@ const Tab = () => {
 
   useEffect(() => {
     if (data) {
-      const allTabs = Object.values(data)
       const currentTab =
-        allTabs.find(tab => tab.status === 'full') ||
-        allTabs.find(tab => tab.status === 'open') ||
+        data.find(tab => tab.status === 'full') ||
+        data.find(tab => tab.status === 'open') ||
         {}
       setTabData(currentTab)
     }
