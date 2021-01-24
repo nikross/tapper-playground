@@ -2,11 +2,13 @@ import { Alert, AlertIcon } from '@chakra-ui/react'
 import { formatDistanceToNowStrict } from 'date-fns'
 
 const PurchaseSuccessAlert = ({ accessExpiryDate }) => {
-  if (accessExpiryDate) {
+  if (Date.parse(accessExpiryDate)) { // Validate date string
     return (
       <Alert
+        borderColor='blue.200'
+        borderWidth='1px'
         borderRadius='md'
-        color='blue.800'
+        color='blue.700'
         fontWeight='500'
         status='info'
       >
@@ -18,8 +20,10 @@ const PurchaseSuccessAlert = ({ accessExpiryDate }) => {
 
   return (
     <Alert
+      borderColor='green.200'
+      borderWidth='1px'
       borderRadius='md'
-      color='green.800'
+      color='green.700'
       fontWeight='500'
       status='success'
     >
