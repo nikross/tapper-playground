@@ -23,7 +23,7 @@ const options = {
       // But not specifying them results in an error.
       // See https://github.com/nextauthjs/next-auth/issues/209 and https://github.com/nextauthjs/next-auth/issues/1065
       profileUrl: `${process.env.NEXTAUTH_URL}/api/auth/profile`,
-      profile: (p) => ({ id: p.userId }),
+      profile: (p) => ({ id: p.userId }), // next-auth will use the profile.id as the session token subject
       clientId: process.env.LATERPAY_CLIENT_ID,
       // Don't specify a clientSecret. Add it via the Authorization header instead.
       // Reason: Hydra expects 'client_secret_basic'. But next-auth will use 'client_secret_post' when clientSecret is set in config.
@@ -48,9 +48,8 @@ const options = {
     // See https://github.com/nextauthjs/next-auth/issues/1177#issuecomment-764961383
     jwt: async (token, user, account, profile, isNewUser) => {
       if (account?.accessToken) { // account will only be available on signin
-        const { accessToken } = account
         // Add access token and user ID to the JWT session
-        token.accessToken = accessToken
+        token.accessToken = account.accessToken
       }
       return Promise.resolve(token)
     },
@@ -59,14 +58,15 @@ const options = {
     session: async (session, token) => { // token equals the return value from jwt callback
       if (token?.accessToken) {
         // Check if Laterpay access token has expired
-        const decodedLaterpayAccessToken = decodeJWT(token.accessToken)
-        const expiryDate = fromUnixTime(decodedLaterpayAccessToken.exp)
+        const decodedLaterpayToken = decodeJWT(token.accessToken)
+        const expiryDate = fromUnixTime(decodedLaterpayToken.exp)
         const laterpayAccessHasExpired = isPast(expiryDate)
         if (laterpayAccessHasExpired) {
           return false // Force signout
         }
-        // Otherwise, add Laterpay access token to next-auth's JWT session
+        // Otherwise, add Laterpay access token to next-auth's session object
         session.accessToken = token.accessToken
+        // Add Laterpay user ID to user profile
         session.user.id = token.sub
         // token.sub equals the Laterpay user ID. It is derived from the decoded access token (see /api/auth/profile).
         return Promise.resolve(session)
