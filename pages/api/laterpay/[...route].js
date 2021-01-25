@@ -1,19 +1,8 @@
-import axios from 'axios'
 import { getSession } from 'next-auth/client'
 import qs from 'qs'
+import { handleRequest } from '@/utils/laterpay-fetcher'
 
 const BASE_URL = 'https://tapi.laterpay.net'
-
-const handleRequest = async (request) => {
-  return axios(request)
-    .then(response => {
-      return response.data
-    })
-    .catch((error) => {
-      const errorResponse = error.response || error
-      return errorResponse.data || errorResponse
-    })
-}
 
 export default async (req, res) => {
   const session = await getSession({ req })
