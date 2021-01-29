@@ -32,7 +32,6 @@ export default async (req, res) => {
       // Check if user has access
       case 'access':
         requestObject.params = {
-          merchant_id: process.env.LATERPAY_MERCHANT_ID,
           ...params
         }
         break
