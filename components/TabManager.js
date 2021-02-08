@@ -26,6 +26,7 @@ const TabManager = ({ isValidating, tabData }) => {
     <Box
       bg='white'
       borderRadius='lg'
+      boxShadow='0 2px 4px rgba(0,0,0,0.1)'
       w='700px'
       maxW='full'
       p={12}
