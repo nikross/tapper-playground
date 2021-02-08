@@ -16,6 +16,7 @@
     "@emotion/styled": "^11.0.0",
     "axios": "^0.21.1",
     "date-fns": "^2.16.1",
+    "file-saver": "^2.0.5",
     "framer-motion": "^3.2.2-rc.1",
     "next": "^10.0.5",
     "next-auth": "3.2.0-canary.35",

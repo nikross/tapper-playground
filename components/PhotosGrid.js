@@ -5,8 +5,7 @@ const PhotosGrid = ({ photos }) => {
   return (
     <Flex
       px={8}
-      pt={6}
-      pb={20}
+      py={6}
       justify='center'
     >
       <Grid

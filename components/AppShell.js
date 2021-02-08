@@ -11,7 +11,7 @@ const AppShell = ({ children }) => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Header />
-      <Box pt={20}>
+      <Box py={20}>
         {children}
       </Box>
       {/* <Footer /> */}
