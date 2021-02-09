@@ -1,6 +1,6 @@
 /* global Blob */
 import { useState } from 'react'
-import { Button, Flex } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import { DownloadIcon } from '@chakra-ui/icons'
 import { useSession } from 'next-auth/client'
 import { saveAs } from 'file-saver'
@@ -25,25 +25,23 @@ const DownloadPurchaseData = () => {
   }
 
   return (
-    <Flex justify='center' pt={6}>
-      <Button
-        as='a'
-        href='/api/laterpay/data.csv'
-        download
-        isLoading={isDownloading}
-        variant='ghost'
-        color='gray.500'
-        size='lg'
-        leftIcon={<DownloadIcon />}
-        _hover={{
-          bg: 'gray.200',
-          color: 'gray.700'
-        }}
-        onClick={e => handleDownload(e)}
-      >
-        Download purchase data
-      </Button>
-    </Flex>
+    <Button
+      as='a'
+      href='/api/laterpay/data.csv'
+      download
+      isLoading={isDownloading}
+      variant='ghost'
+      color='gray.500'
+      size='lg'
+      leftIcon={<DownloadIcon />}
+      _hover={{
+        bg: 'gray.200',
+        color: 'gray.700'
+      }}
+      onClick={e => handleDownload(e)}
+    >
+      Download purchase data
+    </Button>
   )
 }
 

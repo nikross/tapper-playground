@@ -9,7 +9,6 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  Flex,
   useDisclosure
 } from '@chakra-ui/react'
 import { Search2Icon } from '@chakra-ui/icons'
@@ -23,14 +22,7 @@ const JsonViewer = ({ tabData }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = useRef()
   return (
-    <Flex
-      direction='column'
-      align='center'
-      py={6}
-      minH={12}
-      w='700px'
-      maxW='full'
-    >
+    <>
       <Button
         variant='ghost'
         color='gray.500'
@@ -74,7 +66,7 @@ const JsonViewer = ({ tabData }) => {
           </DrawerContent>
         </DrawerOverlay>
       </Drawer>
-    </Flex>
+    </>
   )
 }
 JsonViewer.defaultProps = {

@@ -4,6 +4,7 @@ import { Flex } from '@chakra-ui/react'
 import { useSession } from 'next-auth/client'
 
 import AppShell from '@/components/AppShell'
+import DownloadPurchaseData from '@/components/DownloadPurchaseData'
 import JsonViewer from '@/components/JsonViewer'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import SignInAlert from '@/components/SignInAlert'
@@ -54,7 +55,18 @@ const Tab = () => {
           ? (
             <>
               <TabManager tabData={tabData} isValidating={isValidating} />
-              <JsonViewer tabData={tabData} />
+              <Flex
+                direction={{ base: 'column', sm: 'row' }}
+                align='center'
+                justify='space-between'
+                py={6}
+                minH={12}
+                w='700px'
+                maxW='full'
+              >
+                <DownloadPurchaseData />
+                <JsonViewer tabData={tabData} />
+              </Flex>
             </>)
           : <SignInAlert />}
       </Flex>
