@@ -23,8 +23,8 @@ const Tab = () => {
   useEffect(() => {
     if (data && data.length) {
       const currentTab =
-        data.find(tab => tab.status === 'full') ||
-        data.find(tab => tab.status === 'open') ||
+        data.find(tab => tab.status === 'full' && !!tab.merchant_id) ||
+        data.find(tab => tab.status === 'open' && !!tab.merchant_id) ||
         {}
       setTabData(currentTab)
     }
