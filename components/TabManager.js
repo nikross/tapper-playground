@@ -76,8 +76,8 @@ const TabManager = ({ isValidating, tabData }) => {
                   incrementTabTotal={contributionAmount => setAmountSpent(amountSpent + contributionAmount)}
                 />
               : <SettleTabButton
-                  resetAmountSpent={() => setAmountSpent(0)}
-                  tabId={tabData && tabData.id}
+                  tabId={tabData?.id}
+                  totalAmount={tabData?.total}
                 />}
           </Box>
         </Skeleton>

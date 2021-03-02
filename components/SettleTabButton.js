@@ -1,35 +1,39 @@
 import { useState } from 'react'
-import { useRouter } from 'next/router'
-import { mutate } from 'swr'
+import qs from 'qs'
 import { Button, Flex } from '@chakra-ui/react'
+import { loadStripe } from '@stripe/stripe-js'
 import toast from 'react-hot-toast'
 
-import { fetchFromLaterpay } from '@/utils/laterpay-fetcher'
+import { handleRequest } from '@/utils/laterpay-fetcher'
 
-const SettleTabButton = ({ resetAmountSpent, tabId }) => {
+// Make sure to call `loadStripe` outside of a component’s render to avoid
+// recreating the `Stripe` object on every render.
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY)
+
+const SettleTabButton = ({ tabId, totalAmount }) => {
   const [isSettlingTab, setIsSettlingTab] = useState(false)
-  const router = useRouter()
 
-  const onSettleTab = async tabId => {
+  const onButtonClick = async () => {
     setIsSettlingTab(true)
-    if (tabId) {
-      const result = await fetchFromLaterpay(`/v1/payment/finish/${tabId}`, {
-        method: 'post'
+    const stripe = await stripePromise
+    const session = await handleRequest({
+      url: '/api/stripe/checkout',
+      method: 'post',
+      data: qs.stringify({
+        tabId,
+        totalAmount
       })
-      if (result.error) {
-        toast.error(result.error.message)
-      } else {
-        toast.success('Tab settled')
-        resetAmountSpent()
-        // Revalidate Tab data
-        mutate('/v1/tabs')
-        // If the user attempted to purchase a photo, redirect back to that purchase page
-        if (router.query.fromPhoto) {
-          router.push(`/photos/${router.query.fromPhoto}`)
-        }
-      }
+    })
+    // When the customer clicks on the button, redirect them to Checkout.
+    const result = await stripe.redirectToCheckout({
+      sessionId: session.id
+    })
+    if (result.error) {
+      // If `redirectToCheckout` fails due to a browser or network
+      // error, display the localized error message to your customer
+      // using `result.error.message`.
+      toast.error(result.error.message)
     }
-    setIsSettlingTab(false)
   }
 
   return (
@@ -38,7 +42,7 @@ const SettleTabButton = ({ resetAmountSpent, tabId }) => {
         isLoading={isSettlingTab}
         colorScheme='teal'
         size='lg'
-        onClick={() => onSettleTab(tabId)}
+        onClick={() => onButtonClick()}
       >
         Settle Your Tab
       </Button>
