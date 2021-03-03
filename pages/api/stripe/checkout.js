@@ -1,12 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
-/*
-1. Get full tab & extract amount
-2. Create checkout
-3. Wait for success, then call BYOP endpoint
-*/
-
-const YOUR_DOMAIN = process.env.NEXTAUTH_URL + '/tab'
+const DOMAIN = process.env.NEXTAUTH_URL + '/tab'
 
 export default async (req, res) => {
   try {
@@ -32,8 +26,8 @@ export default async (req, res) => {
         }
       ],
       mode: 'payment',
-      success_url: `${YOUR_DOMAIN}?tab=${req.body.tabId}`,
-      cancel_url: `${YOUR_DOMAIN}?canceled=true`
+      success_url: `${DOMAIN}?id=${req.body.tabId}`,
+      cancel_url: `${DOMAIN}?canceled=true`
     })
     res.status(200).json({ id: session.id })
   } catch (error) {
